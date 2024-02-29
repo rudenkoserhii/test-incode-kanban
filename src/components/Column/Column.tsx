@@ -21,29 +21,25 @@ const Column = ({ column, title, setPage, removeButton, isLoading }: PropsColumn
 
   return (
     <Col style={{ width: 'calc((100% / 3)' }}>
-      <Card
-        style={{ height: '100%' }}
-        title={title}
-        extra={
-          !removeButton &&
-          column.length !== 0 && (
-            <Button
-              onClick={() => setPage(title)}
-              style={{
-                margin: '10px auto 0px auto',
-                width: '50%',
-              }}
-            >
-              Load more
-            </Button>
-          )
-        }
-      >
-        <ul ref={drop} style={{ height: '100%' }}>
-          {column.map((issue) => (
-            <Movable issue={issue} title={title} key={nanoid()} />
-          ))}
-        </ul>
+      <Card style={{ height: '100%', width: '100%' }} title={title}>
+        <div ref={drop} style={{ height: '100%', width: '100%' }}>
+          <List dataSource={column}>
+            {column.map((issue) => (
+              <Movable issue={issue} title={title} key={nanoid()} />
+            ))}
+            {!removeButton && column.length !== 0 && (
+              <Button
+                onClick={() => setPage(title)}
+                style={{
+                  margin: '10px auto 0px auto',
+                  width: '50%',
+                }}
+              >
+                Load more
+              </Button>
+            )}
+          </List>
+        </div>
         {isLoading && (
           <Spin
             style={{

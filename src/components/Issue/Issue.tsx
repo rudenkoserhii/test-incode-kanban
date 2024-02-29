@@ -21,6 +21,7 @@ const Issue = ({ issue }: { issue: IssueType }): JSX.Element => {
         border: 'none',
         borderRadius: '20px',
         boxShadow: '1px 1px 2px 2px black',
+        width: '100%',
       }}
     >
       <Card.Meta title={title} description={`#${number} opened ${days} days ago`} />

@@ -107,7 +107,6 @@ const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
       ref={ref}
       style={{
         opacity,
-        padding: '20px 20px 0px 20px',
         background: 'transparent',
         border: 'none',
       }}

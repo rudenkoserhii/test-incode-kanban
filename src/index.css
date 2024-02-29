@@ -1,6 +1,6 @@
 body {
   margin: 20px;
-  font-family: 'Inconsolata', sans-serif;
+  font-family: 'Inconsolata', sans-serif !important;
 }
 
 button:hover {
@@ -9,4 +9,8 @@ button:hover {
 
 a {
   text-decoration: none;
+}
+
+.ant-card-body {
+  height: 100%;
 }
