@@ -7,3 +7,7 @@ export const COLUMN_NAMES: ColumnNamesType = {
 };
 
 export const BASE_URL: string = 'https://api.github.com/repos/"repo"/issues';
+
+export const BASE_URL_STARS: string = 'https://api.github.com/repos/"repo"';
+
+export const DEFAULT_STARS: number = 0;

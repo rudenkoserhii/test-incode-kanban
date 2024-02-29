@@ -16,11 +16,13 @@ import { getFilteredIssues } from '../../helpers';
 import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
 import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
 import { doneIssuesValue } from '../../redux/doneIssues/selectors';
+import { IssueType } from '../../types';
+import { AppDispatch } from '../../redux/store';
 
 const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
 const FIRST_PAGE: number = 1;
 
-const Boards: React.FC = () => {
+const Boards = (): JSX.Element => {
   const [pageToDo, setPageToDo] = useState<number>(FIRST_PAGE);
   const [pageInProgress, setPageInProgress] = useState<number>(FIRST_PAGE);
   const [pageDone, setPageDone] = useState<number>(FIRST_PAGE);
@@ -31,12 +33,12 @@ const Boards: React.FC = () => {
   const [isLoadingInProgress, setIsLoadingInProgress] = useState<boolean>(false);
   const [isLoadingDone, setIsLoadingDone] = useState<boolean>(false);
 
-  const [, setToDoState] = useState([]);
-  const [, setInProgressState] = useState([]);
-  const [, setDoneState] = useState([]);
+  const [, setToDoState] = useState<IssueType[]>([]);
+  const [, setInProgressState] = useState<IssueType[]>([]);
+  const [, setDoneState] = useState<IssueType[]>([]);
 
   const url = useSelector(repoValue);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const changes = useSelector(changesValue);
 
   const repo = url.split('github.com/')[1];
@@ -47,7 +49,7 @@ const Boards: React.FC = () => {
 
   useEffect(() => {
     url &&
-      (async function getData() {
+      (async function getData(): Promise<void> {
         setIsLoadingToDo(true);
         try {
           setRemoveButtonToDo(false);
@@ -84,7 +86,7 @@ const Boards: React.FC = () => {
 
   useEffect(() => {
     url &&
-      (async function getData() {
+      (async function getData(): Promise<void> {
         setIsLoadingInProgress(true);
         try {
           setRemoveButtonInProgress(false);
@@ -121,7 +123,7 @@ const Boards: React.FC = () => {
 
   useEffect(() => {
     url &&
-      (async function getData() {
+      (async function getData(): Promise<void> {
         setIsLoadingDone(true);
         try {
           setRemoveButtonDone(false);

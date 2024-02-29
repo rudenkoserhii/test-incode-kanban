@@ -13,6 +13,7 @@ import { addChange } from '../../redux/changes/slice';
 import { repoValue } from '../../redux/repo/selectors';
 import Issue from '../Issue/Issue';
 import { IssueType } from '../../types';
+import { AppDispatch } from '../../redux/store';
 
 type PropsMovable = {
   issue: IssueType;
@@ -20,7 +21,7 @@ type PropsMovable = {
 };
 
 const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   const url = useSelector(repoValue);
   const repo = url.split('github.com/')[1];

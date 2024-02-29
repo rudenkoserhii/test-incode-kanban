@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 import { repoValue } from '../../redux/repo/selectors';
 import Notiflix from 'notiflix';
 import axios, { AxiosError } from 'axios';
+import { BASE_URL_STARS, DEFAULT_STARS } from '../../constants/constants';
 
-export const Rote = () => {
-  const [stars, setStars] = useState(0);
+const Rote = (): JSX.Element | null => {
+  const [stars, setStars] = useState<number>(DEFAULT_STARS);
 
   const url = useSelector(repoValue);
 
@@ -15,7 +16,7 @@ export const Rote = () => {
     url &&
       (async function getData() {
         try {
-          const { data } = await axios.get(`https://api.github.com/repos/${repo}`);
+          const { data } = await axios.get(BASE_URL_STARS.replace('"repo"', repo));
 
           if (!data) {
             return Notiflix.Notify.failure('Whoops, something went wrong with Stars count!');
@@ -27,12 +28,12 @@ export const Rote = () => {
       })();
   }, [url]);
 
-  return (
-    url && (
-      <h2 style={{ marginBottom: '0px', fontSize: '26px' }}>
-        {'\u2B50'}
-        {stars > 1000 ? ` ${Math.ceil(stars / 1000)} K stars` : stars}
-      </h2>
-    )
-  );
+  return url ? (
+    <h2 style={{ marginBottom: '0px', fontSize: '26px' }}>
+      {'\u2B50'}
+      {stars > 1000 ? ` ${Math.ceil(stars / 1000)} K stars` : stars}
+    </h2>
+  ) : null;
 };
+
+export default Rote;

@@ -39,12 +39,11 @@ const Column = ({ column, title, setPage, removeButton, isLoading }: PropsColumn
           )
         }
       >
-        <List
-          ref={drop}
-          style={{ height: '100%' }}
-          dataSource={column}
-          renderItem={(issue) => <Movable issue={issue} title={title} key={nanoid()} />}
-        />
+        <ul ref={drop} style={{ height: '100%' }}>
+          {column.map((issue) => (
+            <Movable issue={issue} title={title} key={nanoid()} />
+          ))}
+        </ul>
         {isLoading && (
           <Spin
             style={{

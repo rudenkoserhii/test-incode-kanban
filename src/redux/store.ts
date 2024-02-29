@@ -1,11 +1,12 @@
-import { Action, ThunkAction, UnknownAction, configureStore } from '@reduxjs/toolkit';
+import { UnknownAction, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { toDoIssuesSlice } from './toDoIssues/slice';
 import { inProgressIssuesSlice } from './inProgressIssues/slice';
 import { doneIssuesSlice } from './doneIssues/slice';
-import { changesSlice, StateChanges } from './changes/slice';
+import { changesSlice } from './changes/slice';
 import { repoSlice, StateRepo } from './repo/slice';
+import { StateChanges } from '../types';
 
 export type RootState = ReturnType<typeof store.getState>;
 

@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { StateChanges } from '../../types/changes.type';
-import { ActionChangesType } from '../../types';
+import { StateChanges, ActionChangesType, StateChangesItem } from '../../types';
 
 const initialState: StateChanges = {
   value: [],
@@ -15,12 +14,12 @@ export const changesSlice = createSlice({
     },
     addChange(state, action: ActionChangesType) {
       const indexRepo = state.value?.findIndex((element) => element.repo === action.payload.repo);
+      const indexId =
+        indexRepo !== undefined
+          ? state.value![indexRepo]?.data.findIndex((element) => element.id === action.payload.id)
+          : undefined;
 
-      const indexId = state.value[indexRepo]?.data.findIndex(
-        (element) => element.id === action.payload.id
-      );
-
-      const item = {
+      const newItem: StateChangesItem = {
         repo: action.payload.repo,
         data: [
           {
@@ -32,12 +31,16 @@ export const changesSlice = createSlice({
         ],
       };
 
-      indexRepo === -1
-        ? state.value.push(item)
-        : indexId === -1
-          ? state.value[indexRepo].data.push(item.data[0])
-          : state.value[indexRepo].data.splice(indexId, 1) &&
-            state.value[indexRepo].data.push(item.data[0]);
+      if (indexRepo === -1 || indexRepo === undefined) {
+        state.value = [...state.value!, newItem];
+      } else if (indexId === -1 || indexId === undefined) {
+        state.value![indexRepo!].data = [...state.value![indexRepo!].data, newItem.data[0]];
+      } else {
+        const newData = [...state.value![indexRepo!].data];
+
+        newData.splice(indexId!, 1);
+        state.value![indexRepo!].data = [...newData, newItem.data[0]];
+      }
     },
   },
 });

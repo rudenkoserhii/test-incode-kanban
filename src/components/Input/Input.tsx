@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import { Form, Input as AntInput, Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { getRepo } from '../../redux/repo/slice';
+import { AppDispatch } from '../../redux/store';
 
-const Input: React.FC = () => {
-  const dispatch = useDispatch();
+const Input = (): JSX.Element => {
+  const dispatch: AppDispatch = useDispatch();
   const [form] = Form.useForm();
-  const [pattern] = useState(new RegExp('^(ftp|http|https):\\/\\/[^ "]+$'));
+  const [pattern] = useState<RegExp>(new RegExp('^(ftp|http|https):\\/\\/[^ "]+$'));
 
-  const onSubmit = (values: { repoUrl: string }) => {
+  const onSubmit = (values: { repoUrl: string }): void => {
     dispatch(getRepo(values.repoUrl));
     form.resetFields();
   };
 
-  const validateRepoUrl = (_: unknown, value: string) => {
+  const validateRepoUrl = async (_: unknown, value: string): Promise<void> => {
     if (!pattern.test(value)) {
       return Promise.reject('Please enter a valid repo URL');
     }
