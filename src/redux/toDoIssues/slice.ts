@@ -1,13 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
+import { ActionType, IssueType } from '../../types';
+
+const initialState: { value: IssueType[] } = {
+  value: [],
+};
 
 export const toDoIssuesSlice = createSlice({
-  name: "toDoIssues",
-  initialState: { value: [] },
+  name: 'toDoIssues',
+  initialState: initialState,
   reducers: {
-    getToDoIssues(state, action) {
+    getToDoIssues(state, action: ActionType) {
       state.value = action.payload;
     },
-    nextPageToDoIssues(state, action) {
+    nextPageToDoIssues(state, action: ActionType) {
       state.value = [...state.value, ...action.payload];
     },
   },

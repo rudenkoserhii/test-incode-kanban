@@ -3,17 +3,17 @@ import { Card, Col, List, Button, Spin } from 'antd';
 import { nanoid } from 'nanoid';
 import Movable from './Movable';
 import { useDrop } from 'react-dnd';
-import { IssueProps } from '../Issue/Issue';
+import { IssueType } from '../../types';
 
 type PropsColumn = {
-  column;
+  column: IssueType[];
   title: string;
   setPage: (value: string) => void;
   removeButton: boolean;
   isLoading: boolean;
 };
 
-const Column = ({ column, title, setPage, removeButton, isLoading }: PropsColumn) => {
+const Column = ({ column, title, setPage, removeButton, isLoading }: PropsColumn): JSX.Element => {
   const [, drop] = useDrop({
     accept: 'Movable',
     drop: () => ({ name: title }),
@@ -43,9 +43,7 @@ const Column = ({ column, title, setPage, removeButton, isLoading }: PropsColumn
           ref={drop}
           style={{ height: '100%' }}
           dataSource={column}
-          renderItem={(issue: IssueProps['issue']) => (
-            <Movable issue={issue} title={title} key={nanoid()} />
-          )}
+          renderItem={(issue) => <Movable issue={issue} title={title} key={nanoid()} />}
         />
         {isLoading && (
           <Spin

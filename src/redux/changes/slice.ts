@@ -1,18 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-export type StateChanges = {
-  value: StateChangesItem[] | [];
-};
-
-export type StateChangesItem = {
-  repo: string;
-  data: {
-    id: string;
-    columnIn: string;
-    columnOut: string;
-    issue: string;
-  }[];
-};
+import { StateChanges } from '../../types/changes.type';
+import { ActionChangesType } from '../../types';
 
 const initialState: StateChanges = {
   value: [],
@@ -25,7 +13,7 @@ export const changesSlice = createSlice({
     getChanges(state, action) {
       state.value = action.payload;
     },
-    addChange(state, action) {
+    addChange(state, action: ActionChangesType) {
       const indexRepo = state.value?.findIndex((element) => element.repo === action.payload.repo);
 
       const indexId = state.value[indexRepo]?.data.findIndex(

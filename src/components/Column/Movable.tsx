@@ -11,10 +11,11 @@ import { doneIssuesValue } from '../../redux/doneIssues/selectors';
 import { COLUMN_NAMES } from '../../constants/constants';
 import { addChange } from '../../redux/changes/slice';
 import { repoValue } from '../../redux/repo/selectors';
-import Issue, { IssueProps } from '../Issue/Issue';
+import Issue from '../Issue/Issue';
+import { IssueType } from '../../types';
 
 type PropsMovable = {
-  issue: IssueProps['issue'];
+  issue: IssueType;
   title: string;
 };
 
@@ -28,7 +29,7 @@ const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
   const inProgressIssues = useSelector(inProgressIssuesValue);
   const doneIssues = useSelector(doneIssuesValue);
 
-  function objChange(columnIn, columnOut, id: string, issue: IssueProps['issue']) {
+  function objChange(columnIn: string, columnOut: string, id: number, issue: IssueType) {
     return {
       repo: repo,
       id: id,
@@ -49,7 +50,7 @@ const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
     item: { name: title },
     type: 'Movable',
     end: (item, monitor) => {
-      const dropResult = monitor.getDropResult(item);
+      const dropResult: { dropEffect: string; name: string } | null = monitor.getDropResult();
 
       if (
         dropResult &&

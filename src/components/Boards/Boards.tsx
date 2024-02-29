@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Spin } from 'antd';
+import { Row } from 'antd';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,23 +8,28 @@ import { getToDoIssues, nextPageToDoIssues } from '../../redux/toDoIssues/slice'
 import { getInProgressIssues, nextPageInProgressIssues } from '../../redux/inProgressIssues/slice';
 import { getDoneIssues, nextPageDoneIssues } from '../../redux/doneIssues/slice';
 import { repoValue } from '../../redux/repo/selectors';
-import { COLUMN_NAMES } from '../../constants/constants';
+import { BASE_URL, COLUMN_NAMES } from '../../constants/constants';
 import Column from '../Column/Column';
 import Notiflix from 'notiflix';
 import axios, { AxiosError } from 'axios';
+import { getFilteredIssues } from '../../helpers';
+import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
+import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
+import { doneIssuesValue } from '../../redux/doneIssues/selectors';
 
 const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
+const FIRST_PAGE: number = 1;
 
 const Boards: React.FC = () => {
-  const [pageToDo, setPageToDo] = useState(1);
-  const [pageInProgress, setPageInProgress] = useState(1);
-  const [pageDone, setPageDone] = useState(1);
-  const [removeButtonToDo, setRemoveButtonToDo] = useState(false);
-  const [removeButtonInProgress, setRemoveButtonInProgress] = useState(false);
-  const [removeButtonDone, setRemoveButtonDone] = useState(false);
-  const [isLoadingToDo, setIsLoadingToDo] = useState(false);
-  const [isLoadingInProgress, setIsLoadingInProgress] = useState(false);
-  const [isLoadingDone, setIsLoadingDone] = useState(false);
+  const [pageToDo, setPageToDo] = useState<number>(FIRST_PAGE);
+  const [pageInProgress, setPageInProgress] = useState<number>(FIRST_PAGE);
+  const [pageDone, setPageDone] = useState<number>(FIRST_PAGE);
+  const [removeButtonToDo, setRemoveButtonToDo] = useState<boolean>(false);
+  const [removeButtonInProgress, setRemoveButtonInProgress] = useState<boolean>(false);
+  const [removeButtonDone, setRemoveButtonDone] = useState<boolean>(false);
+  const [isLoadingToDo, setIsLoadingToDo] = useState<boolean>(false);
+  const [isLoadingInProgress, setIsLoadingInProgress] = useState<boolean>(false);
+  const [isLoadingDone, setIsLoadingDone] = useState<boolean>(false);
 
   const [, setToDoState] = useState([]);
   const [, setInProgressState] = useState([]);
@@ -36,9 +41,9 @@ const Boards: React.FC = () => {
 
   const repo = url.split('github.com/')[1];
 
-  const toDoIssues = useSelector((state) => state.toDoIssues);
-  const inProgressIssues = useSelector((state) => state.inProgressIssues);
-  const doneIssues = useSelector((state) => state.doneIssues);
+  const toDoIssues = useSelector(toDoIssuesValue);
+  const inProgressIssues = useSelector(inProgressIssuesValue);
+  const doneIssues = useSelector(doneIssuesValue);
 
   useEffect(() => {
     url &&
@@ -47,7 +52,7 @@ const Boards: React.FC = () => {
         try {
           setRemoveButtonToDo(false);
 
-          const toDo = await axios.get(`https://api.github.com/repos/${repo}/issues`, {
+          const toDo = await axios.get(BASE_URL.replace('"repo"', repo), {
             params: {
               state: 'open',
               assignee: 'none',
@@ -63,21 +68,7 @@ const Boards: React.FC = () => {
             return Notiflix.Notify.failure('Whoops, no ToDo issues more!');
           }
 
-          let filtered = [];
-
-          if (changes.some((a) => a.repo === repo)) {
-            filtered = toDo.data.filter(
-              (a) =>
-                !changes
-                  .find((b) => b.repo === repo)
-                  .data.some((d) => a.id === d.id && 'ToDo' === d.columnOut)
-            );
-            changes
-              .find((e) => e.repo === repo)
-              .data.forEach((f) => f.columnIn === 'ToDo' && filtered.push(f.issue));
-          } else {
-            filtered = toDo.data;
-          }
+          const filtered = getFilteredIssues(changes, repo, toDo.data, 'ToDo');
 
           pageToDo === 1
             ? dispatch(getToDoIssues(filtered))
@@ -98,7 +89,7 @@ const Boards: React.FC = () => {
         try {
           setRemoveButtonInProgress(false);
 
-          const inProgress = await axios.get(`https://api.github.com/repos/${repo}/issues`, {
+          const inProgress = await axios.get(BASE_URL.replace('"repo"', repo), {
             params: {
               state: 'open',
               assignee: '*',
@@ -114,21 +105,7 @@ const Boards: React.FC = () => {
             return Notiflix.Notify.failure('Whoops, no In Progress issues more!');
           }
 
-          let filtered = [];
-
-          if (changes.some((a) => a.repo === repo)) {
-            filtered = inProgress.data.filter(
-              (a) =>
-                !changes
-                  .find((b) => b.repo === repo)
-                  .data.some((d) => a.id === d.id && 'In Progress' === d.columnOut)
-            );
-            changes
-              .find((e) => e.repo === repo)
-              .data.forEach((f) => f.columnIn === 'In Progress' && filtered.push(f.issue));
-          } else {
-            filtered = inProgress.data;
-          }
+          const filtered = getFilteredIssues(changes, repo, inProgress.data, 'In Progress');
 
           pageInProgress === 1
             ? dispatch(getInProgressIssues(filtered))
@@ -148,7 +125,7 @@ const Boards: React.FC = () => {
         setIsLoadingDone(true);
         try {
           setRemoveButtonDone(false);
-          const done = await axios.get(`https://api.github.com/repos/${repo}/issues`, {
+          const done = await axios.get(BASE_URL.replace('"repo"', repo), {
             params: {
               state: 'closed',
               page: pageDone,
@@ -163,21 +140,7 @@ const Boards: React.FC = () => {
             return Notiflix.Notify.failure('Whoops, no Done issues more!');
           }
 
-          let filtered = [];
-
-          if (changes.some((a) => a.repo === repo)) {
-            filtered = done.data.filter(
-              (a) =>
-                !changes
-                  .find((b) => b.repo === repo)
-                  .data.some((d) => a.id === d.id && 'Done' === d.columnOut)
-            );
-            changes
-              .find((e) => e.repo === repo)
-              .data.forEach((f) => f.columnIn === 'Done' && filtered.push(f.issue));
-          } else {
-            filtered = done.data;
-          }
+          const filtered = getFilteredIssues(changes, repo, done.data, 'Done');
 
           pageDone === 1
             ? dispatch(getDoneIssues(filtered))
@@ -202,7 +165,6 @@ const Boards: React.FC = () => {
       <Row style={{ height: 'fit-content', width: '100%' }}>
         <DndProvider backend={HTML5Backend}>
           <Column
-            style={{ height: '100%' }}
             title={TO_DO}
             removeButton={removeButtonToDo}
             column={toDoIssues}
@@ -210,7 +172,6 @@ const Boards: React.FC = () => {
             isLoading={isLoadingToDo}
           />
           <Column
-            style={{ height: '100%' }}
             title={IN_PROGRESS}
             removeButton={removeButtonInProgress}
             column={inProgressIssues}
@@ -218,7 +179,6 @@ const Boards: React.FC = () => {
             isLoading={isLoadingInProgress}
           />
           <Column
-            style={{ height: '100%' }}
             title={DONE}
             removeButton={removeButtonDone}
             column={doneIssues}

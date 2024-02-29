@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { repoValue } from '../../redux/repo/selectors';
 import { Typography } from 'antd';
+import { getTitles } from '../../helpers/getTitles';
 
 const { Link } = Typography;
 
@@ -18,17 +19,11 @@ const Title: React.FC = () => {
             .join('/')}
           target="_blank"
         >
-          <span>
-            {url.split('github.com/')[1].split('/')[0].charAt(0).toUpperCase() +
-              url.split('github.com/')[1].split('/')[0].slice(1)}
-          </span>
+          <span>{getTitles(url, 0)}</span>
         </Link>
         {' > '}
         <Link href={url} target="_blank">
-          <span>
-            {url.split('github.com/')[1].split('/')[1].charAt(0).toUpperCase() +
-              url.split('github.com/')[1].split('/')[1].slice(1)}
-          </span>
+          <span>{getTitles(url, 1)}</span>
         </Link>
       </Typography.Title>
     )

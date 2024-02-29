@@ -1,22 +1,10 @@
 import React from 'react';
 import { Card, Typography } from 'antd';
+import { IssueType } from '../../types';
 
 const { Text } = Typography;
 
-export type IssueProps = {
-  issue: {
-    id: number;
-    title: string;
-    number: number;
-    updated_at: string;
-    user: {
-      login: string;
-    };
-    comments: number;
-  };
-};
-
-const Issue: React.FC<IssueProps> = ({ issue }) => {
+const Issue = ({ issue }: { issue: IssueType }): JSX.Element => {
   const { id, title, number, updated_at, user, comments } = issue;
 
   const { login } = user;
