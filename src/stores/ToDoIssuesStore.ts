@@ -1,13 +1,17 @@
+// stores/ToDoIssuesStore.ts
 import { makeAutoObservable } from 'mobx';
 
 class ToDoIssuesStore {
   value = [];
 
-  constructor() {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     makeAutoObservable(this);
   }
 
-  // Add methods to modify state as needed
+  setToDoIssues(value) {
+    this.value = value;
+  }
 }
 
-export default new ToDoIssuesStore();
+export default ToDoIssuesStore;

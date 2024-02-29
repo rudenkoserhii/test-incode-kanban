@@ -1,13 +1,22 @@
+// stores/repoStore.ts
 import { makeAutoObservable } from 'mobx';
 
 class RepoStore {
-  value = '';
+  repoUrl = '';
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  // Add methods to modify state as needed
+  setRepoUrl(url: string) {
+    this.repoUrl = url;
+  }
+
+  getRepoUrl() {
+    return this.repoUrl;
+  }
 }
 
-export default new RepoStore();
+const repoStore = new RepoStore();
+
+export default repoStore;

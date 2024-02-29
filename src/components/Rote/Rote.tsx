@@ -1,16 +1,18 @@
-import React, { useEffect, useContext } from 'react';
-import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { repoValue } from '../../redux/repo/selectors';
 import Notiflix from 'notiflix';
-import axios from 'axios';
-import RootStoreContext from '../RootStore';
+import axios, { AxiosError } from 'axios';
 
-export const Rote: React.FC = observer(() => {
-  const { repoStore } = useContext(RootStoreContext);
-  const [stars, setStars] = React.useState(0);
-  const repo = repoStore.value.split('github.com/')[1];
+export const Rote = () => {
+  const [stars, setStars] = useState(0);
+
+  const url = useSelector(repoValue);
+
+  const repo = url.split('github.com/')[1];
 
   useEffect(() => {
-    repoStore.value &&
+    url &&
       (async function getData() {
         try {
           const { data } = await axios.get(`https://api.github.com/repos/${repo}`);
@@ -20,17 +22,17 @@ export const Rote: React.FC = observer(() => {
           }
           setStars(data.stargazers_count);
         } catch (error) {
-          Notiflix.Notify.warning('Stars count not loaded, ' + error.message);
+          Notiflix.Notify.warning('Stars count not loaded, ' + (error as AxiosError).message);
         }
       })();
-  }, [repoStore.value]);
+  }, [url]);
 
   return (
-    repoStore.value && (
+    url && (
       <h2 style={{ marginBottom: '0px', fontSize: '26px' }}>
         {'\u2B50'}
         {stars > 1000 ? ` ${Math.ceil(stars / 1000)} K stars` : stars}
       </h2>
     )
   );
-});
+};

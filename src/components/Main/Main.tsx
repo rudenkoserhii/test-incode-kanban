@@ -1,14 +1,11 @@
-import React from 'react';
-import { Container } from 'react-bootstrap';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { Title } from '../Title/Title';
+import { Row, Col } from 'antd';
+import Title from '../Title/Title';
 import { Rote } from '../Rote/Rote';
-import { Boards } from '../Boards/Boards';
+import Boards from '../Boards/Boards';
 
-export const Main: React.FC = () => (
+export const Main = () => (
   <main>
-    <Container>
+    <div>
       <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
         <Col>
           <Title />
@@ -17,7 +14,7 @@ export const Main: React.FC = () => (
           <Rote />
         </Col>
       </Row>
-    </Container>
+    </div>
     <Boards />
   </main>
 );

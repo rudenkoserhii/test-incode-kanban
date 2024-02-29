@@ -1,30 +1,50 @@
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react-lite';
-import RootStoreContext from '../../RootStore';
+import React, { useState } from 'react';
+import { Form, Input as AntInput, Button } from 'antd';
+import { useDispatch } from 'react-redux';
+import { getRepo } from '../../redux/repo/slice';
 
-const Input: React.FC = observer(() => {
-  const { repoStore, getRepo } = useContext(RootStoreContext);
+const Input: React.FC = () => {
+  const dispatch = useDispatch();
+  const [form] = Form.useForm();
+  const [pattern] = useState(new RegExp('^(ftp|http|https):\\/\\/[^ "]+$'));
 
-  function onSubmit(e) {
-    e.preventDefault();
-    getRepo(e.target[0].value);
-    e.target.reset();
-  }
+  const onSubmit = (values: { repoUrl: string }) => {
+    dispatch(getRepo(values.repoUrl));
+    form.resetFields();
+  };
+
+  const validateRepoUrl = (_: unknown, value: string) => {
+    if (!pattern.test(value)) {
+      return Promise.reject('Please enter a valid repo URL');
+    }
+
+    return Promise.resolve();
+  };
 
   return (
     <header>
-      <form className="d-flex" onSubmit={onSubmit} role="form">
-        <input
-          role="input"
-          type="text"
-          placeholder="Enter repo url. For example https://github.com/facebook/react"
-          pattern='^(ftp|http|https):\/\/[^ "]+$'
-          value={repoStore.value}
-          onChange={(e) => (repoStore.value = e.target.value)}
-        />
-        <button
+      <Form form={form} onFinish={onSubmit} role="form">
+        <Form.Item
+          name="repoUrl"
+          rules={[
+            {
+              required: true,
+              message: 'Please enter a repo URL',
+            },
+            {
+              validator: validateRepoUrl,
+            },
+          ]}
+        >
+          <AntInput
+            type="text"
+            placeholder="Enter repo URL. For example https://github.com/facebook/react"
+          />
+        </Form.Item>
+        <Button
           data-testid="button"
-          type="submit"
+          type="primary"
+          htmlType="submit"
           style={{
             whiteSpace: 'nowrap',
             borderColor: 'rgb(108,117,125)',
@@ -33,10 +53,10 @@ const Input: React.FC = observer(() => {
           }}
         >
           Load issues
-        </button>
-      </form>
+        </Button>
+      </Form>
     </header>
   );
-});
+};
 
 export default Input;

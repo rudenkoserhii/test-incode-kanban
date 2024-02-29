@@ -1,46 +1,44 @@
-import React, { useEffect, useContext } from 'react';
-import { Container } from 'react-bootstrap';
-import Row from 'react-bootstrap/Row';
-import { Column } from '../Column/Column';
-import Notiflix from 'notiflix';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Button, Spin } from 'antd';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { observer } from 'mobx-react-lite';
-import RootStoreContext from '../../RootStoreContext';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { changesValue } from '../../redux/changes/selectors';
+import { getToDoIssues, nextPageToDoIssues } from '../../redux/toDoIssues/slice';
+import { getInProgressIssues, nextPageInProgressIssues } from '../../redux/inProgressIssues/slice';
+import { getDoneIssues, nextPageDoneIssues } from '../../redux/doneIssues/slice';
+import { repoValue } from '../../redux/repo/selectors';
 import { COLUMN_NAMES } from '../../constants/constants';
+import Column from '../Column/Column';
+import Notiflix from 'notiflix';
+import axios, { AxiosError } from 'axios';
 
-const Boards: React.FC = observer(() => {
-  const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
-  const {
-    pageToDo,
-    pageInProgress,
-    pageDone,
-    removeButtonToDo,
-    removeButtonInProgress,
-    removeButtonDone,
-    isLoadingToDo,
-    isLoadingInProgress,
-    isLoadingDone,
-    setPageToDo,
-    setPageInProgress,
-    setPageDone,
-    setRemoveButtonToDo,
-    setRemoveButtonInProgress,
-    setRemoveButtonDone,
-    setIsLoadingToDo,
-    setIsLoadingInProgress,
-    setIsLoadingDone,
-  } = useContext(RootStoreContext.boardsStore);
+const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
 
-  const { toDoIssues, inProgressIssues, doneIssues } = useContext(RootStoreContext);
+const Boards: React.FC = () => {
+  const [pageToDo, setPageToDo] = useState(1);
+  const [pageInProgress, setPageInProgress] = useState(1);
+  const [pageDone, setPageDone] = useState(1);
+  const [removeButtonToDo, setRemoveButtonToDo] = useState(false);
+  const [removeButtonInProgress, setRemoveButtonInProgress] = useState(false);
+  const [removeButtonDone, setRemoveButtonDone] = useState(false);
+  const [isLoadingToDo, setIsLoadingToDo] = useState(false);
+  const [isLoadingInProgress, setIsLoadingInProgress] = useState(false);
+  const [isLoadingDone, setIsLoadingDone] = useState(false);
 
-  const url = useContext(RootStoreContext.repoStore).value;
-  const dispatch = useContext(RootStoreContext.dispatch);
-  const changes = useContext(RootStoreContext.changesStore);
+  const [, setToDoState] = useState([]);
+  const [, setInProgressState] = useState([]);
+  const [, setDoneState] = useState([]);
+
+  const url = useSelector(repoValue);
+  const dispatch = useDispatch();
+  const changes = useSelector(changesValue);
 
   const repo = url.split('github.com/')[1];
+
+  const toDoIssues = useSelector((state) => state.toDoIssues);
+  const inProgressIssues = useSelector((state) => state.inProgressIssues);
+  const doneIssues = useSelector((state) => state.doneIssues);
 
   useEffect(() => {
     url &&
@@ -84,8 +82,9 @@ const Boards: React.FC = observer(() => {
           pageToDo === 1
             ? dispatch(getToDoIssues(filtered))
             : dispatch(nextPageToDoIssues(filtered));
+          setToDoState(toDoIssues);
         } catch (error) {
-          Notiflix.Notify.warning(error.message);
+          Notiflix.Notify.warning((error as AxiosError).message);
         } finally {
           setIsLoadingToDo(false);
         }
@@ -134,8 +133,9 @@ const Boards: React.FC = observer(() => {
           pageInProgress === 1
             ? dispatch(getInProgressIssues(filtered))
             : dispatch(nextPageInProgressIssues(filtered));
+          setInProgressState(inProgressIssues);
         } catch (error) {
-          Notiflix.Notify.warning(error.message);
+          Notiflix.Notify.warning((error as AxiosError).message);
         } finally {
           setIsLoadingInProgress(false);
         }
@@ -182,16 +182,23 @@ const Boards: React.FC = observer(() => {
           pageDone === 1
             ? dispatch(getDoneIssues(filtered))
             : dispatch(nextPageDoneIssues(filtered));
+          setDoneState(doneIssues);
         } catch (error) {
-          Notiflix.Notify.warning(error.message);
+          Notiflix.Notify.warning((error as AxiosError).message);
         } finally {
           setIsLoadingDone(false);
         }
       })();
   }, [url, pageDone]);
 
+  function setPage(title: string) {
+    title === 'ToDo' && setPageToDo((prev) => prev + 1);
+    title === 'In Progress' && setPageInProgress((prev) => prev + 1);
+    title === 'Done' && setPageDone((prev) => prev + 1);
+  }
+
   return (
-    <Container>
+    <div>
       <Row style={{ height: 'fit-content', width: '100%' }}>
         <DndProvider backend={HTML5Backend}>
           <Column
@@ -199,7 +206,7 @@ const Boards: React.FC = observer(() => {
             title={TO_DO}
             removeButton={removeButtonToDo}
             column={toDoIssues}
-            setPage={() => setPageToDo(TO_DO)}
+            setPage={(title) => setPage(title)}
             isLoading={isLoadingToDo}
           />
           <Column
@@ -207,7 +214,7 @@ const Boards: React.FC = observer(() => {
             title={IN_PROGRESS}
             removeButton={removeButtonInProgress}
             column={inProgressIssues}
-            setPage={() => setPageInProgress(IN_PROGRESS)}
+            setPage={(title) => setPage(title)}
             isLoading={isLoadingInProgress}
           />
           <Column
@@ -215,13 +222,13 @@ const Boards: React.FC = observer(() => {
             title={DONE}
             removeButton={removeButtonDone}
             column={doneIssues}
-            setPage={() => setPageDone(DONE)}
+            setPage={(title) => setPage(title)}
             isLoading={isLoadingDone}
           />
         </DndProvider>
       </Row>
-    </Container>
+    </div>
   );
-});
+};
 
 export default Boards;
