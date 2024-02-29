@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import RootStoreContext from '../RootStore';
+import RootStoreContext from '../../RootStore';
 
 const Input: React.FC = observer(() => {
   const { repoStore, getRepo } = useContext(RootStoreContext);
