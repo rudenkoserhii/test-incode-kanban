@@ -14,3 +14,26 @@ a {
 .ant-card-body {
   height: 100%;
 }
+
+.custom-link-svg {
+  transition: 200ms;
+}
+
+.custom-link-svg:hover,
+.custom-link-svg:focus {
+  filter: drop-shadow(0 0 0.05rem #00b96b);
+  transition: 200ms;
+}
+
+.ant-skeleton-paragraph {
+  margin: 0 !important;
+}
+
+.ant-skeleton-title {
+  margin: 0 !important;
+  height: 1.5rem !important;
+}
+
+.ant-input-affix-wrapper {
+  width: calc(100vw - 156px);
+}

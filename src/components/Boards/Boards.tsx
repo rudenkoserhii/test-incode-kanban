@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row } from 'antd';
+import { Divider, Row } from 'antd';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDispatch, useSelector } from 'react-redux';
@@ -164,6 +164,7 @@ const Boards = (): JSX.Element => {
 
   return (
     <div>
+      <Divider orientation="right">Issues</Divider>
       <Row style={{ height: 'fit-content', width: '100%' }}>
         <DndProvider backend={HTML5Backend}>
           <Column
