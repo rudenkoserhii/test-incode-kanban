@@ -20,7 +20,9 @@ function App() {
             </div>
             <TopRated />
             <Main />
-            <FloatButton.BackTop />
+            <div>
+              <FloatButton.BackTop />
+            </div>
           </PersistGate>
         </Provider>
       </AntApp>

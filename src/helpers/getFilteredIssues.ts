@@ -6,9 +6,12 @@ export const getFilteredIssues = (
   data: IssueType[],
   column: string
 ) => {
+  console.log(changes);
+  console.log(data);
   let filtered = [];
 
   if (changes.some((changedItem) => changedItem.repo === repo)) {
+    console.log('click');
     filtered = data.filter(
       (firstSearch) =>
         !changes

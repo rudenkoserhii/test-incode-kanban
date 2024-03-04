@@ -5,6 +5,9 @@ import { SnippetsOutlined } from '@ant-design/icons';
 import { ValidateStatus } from 'antd/es/form/FormItem';
 import { AppDispatch } from 'redux/store';
 import { getRepo } from '../../redux/repo/slice';
+import { getToDoIssues } from '../../redux/toDoIssues/slice';
+import { getInProgressIssues } from '../../redux/inProgressIssues/slice';
+import { getDoneIssues } from '../../redux/doneIssues/slice';
 
 const Input = (): JSX.Element => {
   const dispatch: AppDispatch = useDispatch();
@@ -15,6 +18,10 @@ const Input = (): JSX.Element => {
 
   const onFinish = (values: { url: string }): void => {
     dispatch(getRepo(values.url));
+    dispatch(getToDoIssues([]));
+    dispatch(getInProgressIssues([]));
+    dispatch(getDoneIssues([]));
+
     form.resetFields();
     setIsValid(undefined);
     setValidateStatus('');

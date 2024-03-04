@@ -9,7 +9,7 @@ import { BASE_URL, COLUMN_NAMES, FIRST_PAGE, GREEN, RED } from 'constants/consta
 import { checkNextPage, getFilteredIssues } from 'helpers';
 import { AppDispatch } from 'redux/store';
 import { IssueType } from 'types';
-import { changesValue } from 'redux/changes/selectors';
+import { changesValue } from '../../redux/changes/selectors';
 import { doneIssuesValue } from '../../redux/doneIssues/selectors';
 import { getDoneIssues, nextPageDoneIssues } from '../../redux/doneIssues/slice';
 import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
@@ -70,7 +70,7 @@ const Boards = (): JSX.Element => {
             return app.message.error('Whoops, something went wrong with ToDo issues!');
           }
           if (toDo.data.length === 0) {
-            return app.message.error('There are no ToDo issues!');
+            app.message.error('There are no ToDo issues on server!');
           }
 
           const filtered = getFilteredIssues(changes, repo, toDo.data, 'ToDo');
@@ -110,7 +110,7 @@ const Boards = (): JSX.Element => {
             return app.message.error('Whoops, something went wrong with InProgress issues!');
           }
           if (inProgress.data.length === 0) {
-            return app.message.error('There are no InProgress issues!');
+            app.message.error('There are no InProgress issues on server!');
           }
 
           const filtered = getFilteredIssues(changes, repo, inProgress.data, 'In Progress');
@@ -147,7 +147,7 @@ const Boards = (): JSX.Element => {
             return app.message.error('Whoops, something went wrong with Done issues!');
           }
           if (done.data.length === 0) {
-            return app.message.error('There are no Done issues!');
+            app.message.error('There are no Done issues on server!');
           }
 
           const filtered = getFilteredIssues(changes, repo, done.data, 'Done');
