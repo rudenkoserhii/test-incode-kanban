@@ -7,7 +7,7 @@ export const Main = (): JSX.Element => (
   <main>
     <div>
       <Divider orientation="right">Title</Divider>
-      <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
+      <Row className="title">
         <Col>
           <Title />
         </Col>

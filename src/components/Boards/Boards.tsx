@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Row } from 'antd';
+import { App, Divider, Row, message } from 'antd';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ import { BASE_URL, COLUMN_NAMES } from '../../constants/constants';
 import Column from '../Column/Column';
 import Notiflix from 'notiflix';
 import axios, { AxiosError } from 'axios';
-import { getFilteredIssues } from '../../helpers';
+import { checkNextPage, getFilteredIssues } from '../../helpers';
 import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
 import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
 import { doneIssuesValue } from '../../redux/doneIssues/selectors';
@@ -26,12 +26,12 @@ const Boards = (): JSX.Element => {
   const [pageToDo, setPageToDo] = useState<number>(FIRST_PAGE);
   const [pageInProgress, setPageInProgress] = useState<number>(FIRST_PAGE);
   const [pageDone, setPageDone] = useState<number>(FIRST_PAGE);
-  const [removeButtonToDo, setRemoveButtonToDo] = useState<boolean>(false);
-  const [removeButtonInProgress, setRemoveButtonInProgress] = useState<boolean>(false);
-  const [removeButtonDone, setRemoveButtonDone] = useState<boolean>(false);
   const [isLoadingToDo, setIsLoadingToDo] = useState<boolean>(false);
   const [isLoadingInProgress, setIsLoadingInProgress] = useState<boolean>(false);
   const [isLoadingDone, setIsLoadingDone] = useState<boolean>(false);
+  const [nextPageToDo, setNextPageToDo] = useState<boolean>(false);
+  const [nextPageInProgress, setNextPageInProgress] = useState<boolean>(false);
+  const [nextPageDone, setNextPageDone] = useState<boolean>(false);
 
   const [, setToDoState] = useState<IssueType[]>([]);
   const [, setInProgressState] = useState<IssueType[]>([]);
@@ -41,6 +41,8 @@ const Boards = (): JSX.Element => {
   const dispatch: AppDispatch = useDispatch();
   const changes = useSelector(changesValue);
 
+  const app = App.useApp();
+
   const repo = url.split('github.com/')[1];
 
   const toDoIssues = useSelector(toDoIssuesValue);
@@ -49,10 +51,10 @@ const Boards = (): JSX.Element => {
 
   useEffect(() => {
     url &&
-      (async function getData(): Promise<void> {
+      (async function getData() {
         setIsLoadingToDo(true);
         try {
-          setRemoveButtonToDo(false);
+          setNextPageToDo(false);
 
           const toDo = await axios.get(BASE_URL.replace('"repo"', repo), {
             params: {
@@ -62,13 +64,23 @@ const Boards = (): JSX.Element => {
             },
           });
 
-          if (!toDo.data) {
-            return Notiflix.Notify.failure('Whoops, something went wrong with ToDo issues!');
-          } else if (toDo.data.length === 0) {
-            setRemoveButtonToDo(true);
-
-            return Notiflix.Notify.failure('Whoops, no ToDo issues more!');
+          if (checkNextPage(toDo.headers?.link, pageToDo)) {
+            setNextPageToDo(true);
           }
+
+          if (!toDo.data) {
+            // return Notiflix.Notify.failure('Whoops, something went wrong with ToDo issues!');
+            return app.message.error('Whoops, something went wrong with ToDo issues!');
+          }
+          if (toDo.data.length === 0) {
+            // return Notiflix.Notify.failure('There are no ToDo issues!');
+            return app.message.error('There are no ToDo issues!');
+          }
+          // else if (toDo.data.length === 0) {
+          //   setRemoveButtonToDo(true);
+
+          //   return Notiflix.Notify.failure('Whoops, no ToDo issues more!');
+          // }
 
           const filtered = getFilteredIssues(changes, repo, toDo.data, 'ToDo');
 
@@ -77,7 +89,8 @@ const Boards = (): JSX.Element => {
             : dispatch(nextPageToDoIssues(filtered));
           setToDoState(toDoIssues);
         } catch (error) {
-          Notiflix.Notify.warning((error as AxiosError).message);
+          // Notiflix.Notify.warning((error as AxiosError).message);
+          app.message.warning((error as AxiosError).message);
         } finally {
           setIsLoadingToDo(false);
         }
@@ -86,10 +99,10 @@ const Boards = (): JSX.Element => {
 
   useEffect(() => {
     url &&
-      (async function getData(): Promise<void> {
+      (async function getData() {
         setIsLoadingInProgress(true);
         try {
-          setRemoveButtonInProgress(false);
+          setNextPageInProgress(false);
 
           const inProgress = await axios.get(BASE_URL.replace('"repo"', repo), {
             params: {
@@ -99,13 +112,23 @@ const Boards = (): JSX.Element => {
             },
           });
 
-          if (!inProgress.data) {
-            return Notiflix.Notify.failure('Whoops, something went wrong with In progress issues!');
-          } else if (inProgress.data.length === 0) {
-            setRemoveButtonInProgress(true);
-
-            return Notiflix.Notify.failure('Whoops, no In Progress issues more!');
+          if (checkNextPage(inProgress.headers?.link, pageInProgress)) {
+            setNextPageToDo(true);
           }
+
+          if (!inProgress.data) {
+            // return Notiflix.Notify.failure('Whoops, something went wrong with InProgress issues!');
+            return app.message.error('Whoops, something went wrong with InProgress issues!');
+          }
+          if (inProgress.data.length === 0) {
+            // return Notiflix.Notify.failure('There are no InProgress issues!');
+            return app.message.error('There are no InProgress issues!');
+          }
+          // else if (inProgress.data.length === 0) {
+          //   setRemoveButtonInProgress(true);
+
+          //   return Notiflix.Notify.failure('Whoops, no In Progress issues more!');
+          // }
 
           const filtered = getFilteredIssues(changes, repo, inProgress.data, 'In Progress');
 
@@ -114,7 +137,8 @@ const Boards = (): JSX.Element => {
             : dispatch(nextPageInProgressIssues(filtered));
           setInProgressState(inProgressIssues);
         } catch (error) {
-          Notiflix.Notify.warning((error as AxiosError).message);
+          // Notiflix.Notify.warning((error as AxiosError).message);
+          app.message.warning((error as AxiosError).message);
         } finally {
           setIsLoadingInProgress(false);
         }
@@ -123,10 +147,10 @@ const Boards = (): JSX.Element => {
 
   useEffect(() => {
     url &&
-      (async function getData(): Promise<void> {
+      (async function getData() {
         setIsLoadingDone(true);
         try {
-          setRemoveButtonDone(false);
+          setNextPageDone(false);
           const done = await axios.get(BASE_URL.replace('"repo"', repo), {
             params: {
               state: 'closed',
@@ -134,13 +158,23 @@ const Boards = (): JSX.Element => {
             },
           });
 
-          if (!done.data) {
-            return Notiflix.Notify.failure('Whoops, something went wrong with Done issues!');
-          } else if (done.data.length === 0) {
-            setRemoveButtonDone(true);
-
-            return Notiflix.Notify.failure('Whoops, no Done issues more!');
+          if (checkNextPage(done.headers?.link, pageDone)) {
+            setNextPageDone(true);
           }
+          if (!done.data) {
+            // return Notiflix.Notify.failure('Whoops, something went wrong with Done issues!');
+            return app.message.error('Whoops, something went wrong with Done issues!');
+          }
+          if (done.data.length === 0) {
+            // return Notiflix.Notify.failure('There are no Done issues!');
+            return app.message.error('There are no Done issues!');
+          }
+
+          // else if (done.data.length === 0) {
+          //   setRemoveButtonDone(true);
+
+          //   return Notiflix.Notify.failure('Whoops, no Done issues more!');
+          // }
 
           const filtered = getFilteredIssues(changes, repo, done.data, 'Done');
 
@@ -149,7 +183,8 @@ const Boards = (): JSX.Element => {
             : dispatch(nextPageDoneIssues(filtered));
           setDoneState(doneIssues);
         } catch (error) {
-          Notiflix.Notify.warning((error as AxiosError).message);
+          // Notiflix.Notify.warning((error as AxiosError).message);
+          app.message.warning((error as AxiosError).message);
         } finally {
           setIsLoadingDone(false);
         }
@@ -162,30 +197,78 @@ const Boards = (): JSX.Element => {
     title === 'Done' && setPageDone((prev) => prev + 1);
   }
 
+  const [backgroundToDo, setBackgroundToDo] = useState<string>('white');
+  const [backgroundInProgress, setBackgroundInProgress] = useState<string>('white');
+  const [backgroundDone, setBackgroundDone] = useState<string>('white');
+
+  const setBackGround = (color: string, column: string) => {
+    const red: string = 'rgba(185, 0, 0, 0.1)';
+    const green: string = 'rgba(0, 185, 107, 0.1)';
+
+    if (color === 'white') {
+      setBackgroundToDo('white');
+      setBackgroundInProgress('white');
+      setBackgroundDone('white');
+    }
+    if (color === 'red') {
+      switch (column) {
+        case 'ToDo': {
+          setBackgroundToDo(red);
+          setBackgroundInProgress(green);
+          setBackgroundDone(green);
+          break;
+        }
+
+        case 'InProgress': {
+          setBackgroundToDo(green);
+          setBackgroundInProgress(red);
+          setBackgroundDone(green);
+          break;
+        }
+
+        case 'Done': {
+          setBackgroundToDo(green);
+          setBackgroundInProgress(green);
+          setBackgroundDone(red);
+          break;
+        }
+
+        default:
+          return;
+      }
+    }
+  };
+
   return (
     <div>
       <Divider orientation="right">Issues</Divider>
-      <Row style={{ height: 'fit-content', width: '100%' }}>
+      <Row className="boards__row">
         <DndProvider backend={HTML5Backend}>
           <Column
             title={TO_DO}
-            removeButton={removeButtonToDo}
+            removeButton={nextPageToDo}
             column={toDoIssues}
             setPage={(title) => setPage(title)}
+            background={backgroundToDo}
+            backgroundUp={(color: string) => setBackGround(color, 'ToDo')}
             isLoading={isLoadingToDo}
           />
           <Column
             title={IN_PROGRESS}
-            removeButton={removeButtonInProgress}
+            removeButton={nextPageInProgress}
             column={inProgressIssues}
             setPage={(title) => setPage(title)}
+            background={backgroundInProgress}
+            backgroundUp={(color: string) => setBackGround(color, 'InProgress')}
             isLoading={isLoadingInProgress}
           />
           <Column
             title={DONE}
-            removeButton={removeButtonDone}
+            removeButton={nextPageDone}
             column={doneIssues}
             setPage={(title) => setPage(title)}
+            background={backgroundDone}
+            backgroundUp={(color: string) => setBackGround(color, 'Done')}
             isLoading={isLoadingDone}
           />
         </DndProvider>

@@ -13,16 +13,7 @@ const Issue = ({ issue }: { issue: IssueType }): JSX.Element => {
   );
 
   return (
-    <Card
-      id={id.toString()}
-      style={{
-        background: 'transparent',
-        border: 'none',
-        borderRadius: '20px',
-        boxShadow: '1px 1px 2px 2px black',
-        width: '100%',
-      }}
-    >
+    <Card id={id.toString()} className="issue">
       <Card.Meta title={title} description={`#${number} opened ${days} days ago`} />
       <Text>
         {login} | Comments: {comments}

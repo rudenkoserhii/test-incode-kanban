@@ -1,4 +1,4 @@
-import { ConfigProvider, Divider, FloatButton } from 'antd';
+import { ConfigProvider, Divider, FloatButton, App as AntApp } from 'antd';
 import Input from './components/Input/Input';
 import { Main } from './components/Main/Main';
 import { Provider } from 'react-redux';
@@ -10,18 +10,20 @@ import Logo from './components/Logo/Logo';
 function App() {
   return (
     <ConfigProvider theme={{ token: { colorPrimary: '#00b96b' } }}>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <div>
-            <Logo />
-            <Divider orientation="right">Input Link</Divider>
-            <Input />
-          </div>
-          <TopRated />
-          <Main />
-          <FloatButton.BackTop />
-        </PersistGate>
-      </Provider>
+      <AntApp>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <div>
+              <Logo />
+              <Divider orientation="right">Input Link</Divider>
+              <Input />
+            </div>
+            <TopRated />
+            <Main />
+            <FloatButton.BackTop />
+          </PersistGate>
+        </Provider>
+      </AntApp>
     </ConfigProvider>
   );
 }

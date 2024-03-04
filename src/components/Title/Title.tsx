@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { repoValue } from '../../redux/repo/selectors';
 import { Typography } from 'antd';
 import { getTitles } from '../../helpers/getTitles';
+import { RightOutlined } from '@ant-design/icons';
 
 const { Link } = Typography;
 
@@ -9,8 +10,9 @@ const Title = (): JSX.Element | null => {
   const url = useSelector(repoValue);
 
   return url ? (
-    <Typography.Title level={1} style={{ margin: '0px', fontSize: '26px', color: 'blue' }}>
+    <Typography.Title level={1} className="title__box">
       <Link
+        className="link"
         href={url
           .split('/')
           .splice(0, url.split('/').length - 1)
@@ -19,8 +21,14 @@ const Title = (): JSX.Element | null => {
       >
         <span>{getTitles(url, 0)}</span>
       </Link>
-      {' > '}
-      <Link href={url} target="_blank">
+      <RightOutlined
+        style={{
+          marginInline: 16,
+          fontSize: 16,
+          color: '#00b96b',
+        }}
+      />
+      <Link href={url} target="_blank" className="link">
         <span>{getTitles(url, 1)}</span>
       </Link>
     </Typography.Title>

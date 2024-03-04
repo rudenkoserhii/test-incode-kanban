@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, Col, List, Button, Spin } from 'antd';
 import { nanoid } from 'nanoid';
 import Movable from './Movable';
@@ -9,36 +8,58 @@ type PropsColumn = {
   column: IssueType[];
   title: string;
   setPage: (value: string) => void;
+  background: string;
+  backgroundUp: (value: string) => void;
   removeButton: boolean;
   isLoading: boolean;
 };
 
-const Column = ({ column, title, setPage, removeButton, isLoading }: PropsColumn): JSX.Element => {
+const Column = ({
+  column,
+  title,
+  setPage,
+  background,
+  backgroundUp,
+  removeButton,
+  isLoading,
+}: PropsColumn): JSX.Element => {
   const [, drop] = useDrop({
     accept: 'Movable',
-    drop: () => ({ name: title }),
+    drop: () => {
+      backgroundUp('white');
+
+      return { name: title };
+    },
+    canDrop: (item: { name: string }) => {
+      const result = item.name !== title;
+
+      if (!result) {
+        backgroundUp('red');
+      }
+
+      return result;
+    },
   });
 
   return (
-    <Col style={{ width: 'calc((100% / 3)' }}>
-      <Card style={{ height: '100%', width: '100%' }} title={title}>
-        <div ref={drop} style={{ height: '100%', width: '100%' }}>
+    <Col className="issues">
+      <Card className="full-width-height" title={title} style={{ background }}>
+        <div ref={drop} className="full-width-height">
           <List dataSource={column}>
             {column.map((issue) => (
-              <Movable issue={issue} title={title} key={nanoid()} />
+              <Movable
+                issue={issue}
+                title={title}
+                key={nanoid()}
+                didDrop={() => backgroundUp('white')}
+              />
             ))}
-            {!removeButton && column.length !== 0 && (
-              <Button
-                onClick={() => setPage(title)}
-                style={{
-                  margin: '10px auto 0px auto',
-                  width: '50%',
-                }}
-              >
-                Load more
-              </Button>
-            )}
           </List>
+          {removeButton && (
+            <Button className="loadMore" type="primary" onClick={() => setPage(title)}>
+              Load more
+            </Button>
+          )}
         </div>
         {isLoading && (
           <Spin

@@ -1,10 +1,8 @@
 body {
-  margin: 20px;
-  font-family: 'Inconsolata', sans-serif !important;
-}
-
-button:hover {
-  outline: 3px solid rgb(33, 37, 41);
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
 }
 
 a {
@@ -13,6 +11,30 @@ a {
 
 .ant-card-body {
   height: 100%;
+}
+
+.ant-card-head-title {
+  text-align: center;
+}
+
+.boards__row {
+  gap: 16px;
+
+  height: fit-content;
+  width: 100%;
+}
+
+.ant-col.issues {
+  width: calc((100% - 32px) / 3);
+
+  transition: 200ms;
+}
+
+.full-width-height {
+  height: 100%;
+  width: 100%;
+
+  transition: 200ms;
 }
 
 .custom-link-svg {
@@ -34,6 +56,85 @@ a {
   height: 1.5rem !important;
 }
 
-.ant-input-affix-wrapper {
-  width: calc(100vw - 156px);
+.dropdown > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  padding: 4px 11px;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+  line-height: 1.5714285714285714;
+  border: 0.8px solid rgb(217, 217, 217);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.dropdown:hover > div {
+  border-color: #00b96b;
+  transition: all 0.2s;
+}
+
+.ant-form {
+  flex-wrap: nowrap;
+  gap: 16px;
+  width: 100%;
+}
+
+.ant-form-item {
+  margin: 0 !important;
+  width: auto !important;
+}
+
+.ant-form-item.input-one {
+  flex-grow: 1;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stars {
+  font-size: 16px;
+}
+
+.link > span {
+  color: #00b96b;
+}
+
+.link:hover,
+.link:focus {
+  filter: drop-shadow(0 0 0.05rem #00b96b);
+  transition: 200ms;
+}
+
+.movable {
+  cursor: grab;
+  background: transparent;
+  border: none;
+}
+.issue {
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0px 0px 2px 2px #00b96b;
+  width: 100%;
+}
+
+.movable:hover,
+.movable:focus {
+  filter: drop-shadow(0 0 0.05rem #00b96b);
+}
+
+.loadMore {
+  display: block;
+  margin: 12px auto 0px auto;
+}
+
+.ant-float-btn-icon > span > svg {
+  fill: #00b96b;
 }

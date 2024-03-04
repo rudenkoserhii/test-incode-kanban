@@ -18,9 +18,10 @@ import { AppDispatch } from '../../redux/store';
 type PropsMovable = {
   issue: IssueType;
   title: string;
+  didDrop: () => void;
 };
 
-const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
+const Movable = ({ issue, title, didDrop }: PropsMovable): JSX.Element => {
   const dispatch: AppDispatch = useDispatch();
 
   const url = useSelector(repoValue);
@@ -45,6 +46,7 @@ const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
   const [, drop] = useDrop({
     accept: 'Movable',
     drop: () => ({ name: title }),
+    canDrop: (item: { name: string }) => item.name !== title,
   });
 
   const [{ isDragging }, drag] = useDrag({
@@ -53,6 +55,7 @@ const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
     end: (item, monitor) => {
       const dropResult: { dropEffect: string; name: string } | null = monitor.getDropResult();
 
+      didDrop();
       if (
         dropResult &&
         Object.values(COLUMN_NAMES).includes(dropResult.name) &&
@@ -94,7 +97,7 @@ const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
       }
     },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: !!monitor.isDragging(),
     }),
   });
 
@@ -104,11 +107,10 @@ const Movable = ({ issue, title }: PropsMovable): JSX.Element => {
 
   return (
     <List.Item
+      className="movable"
       ref={ref}
       style={{
         opacity,
-        background: 'transparent',
-        border: 'none',
       }}
     >
       <Issue issue={issue} />
