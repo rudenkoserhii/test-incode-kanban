@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { App, Divider, Row, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { App, Divider, Row } from 'antd';
+import axios, { AxiosError } from 'axios';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useDispatch, useSelector } from 'react-redux';
-import { changesValue } from '../../redux/changes/selectors';
-import { getToDoIssues, nextPageToDoIssues } from '../../redux/toDoIssues/slice';
-import { getInProgressIssues, nextPageInProgressIssues } from '../../redux/inProgressIssues/slice';
-import { getDoneIssues, nextPageDoneIssues } from '../../redux/doneIssues/slice';
-import { repoValue } from '../../redux/repo/selectors';
-import { BASE_URL, COLUMN_NAMES } from '../../constants/constants';
-import Column from '../Column/Column';
-import Notiflix from 'notiflix';
-import axios, { AxiosError } from 'axios';
-import { checkNextPage, getFilteredIssues } from '../../helpers';
-import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
-import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
+import Column from 'components/Column/Column';
+import { BASE_URL, COLUMN_NAMES, FIRST_PAGE, GREEN, RED } from 'constants/constants';
+import { checkNextPage, getFilteredIssues } from 'helpers';
+import { AppDispatch } from 'redux/store';
+import { IssueType } from 'types';
+import { changesValue } from 'redux/changes/selectors';
 import { doneIssuesValue } from '../../redux/doneIssues/selectors';
-import { IssueType } from '../../types';
-import { AppDispatch } from '../../redux/store';
+import { getDoneIssues, nextPageDoneIssues } from '../../redux/doneIssues/slice';
+import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
+import { getInProgressIssues, nextPageInProgressIssues } from '../../redux/inProgressIssues/slice';
+import { repoValue } from '../../redux/repo/selectors';
+import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
+import { getToDoIssues, nextPageToDoIssues } from '../../redux/toDoIssues/slice';
 
 const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
-const FIRST_PAGE: number = 1;
 
 const Boards = (): JSX.Element => {
   const [pageToDo, setPageToDo] = useState<number>(FIRST_PAGE);
@@ -45,9 +43,9 @@ const Boards = (): JSX.Element => {
 
   const repo = url.split('github.com/')[1];
 
-  const toDoIssues = useSelector(toDoIssuesValue);
-  const inProgressIssues = useSelector(inProgressIssuesValue);
-  const doneIssues = useSelector(doneIssuesValue);
+  let toDoIssues = useSelector(toDoIssuesValue);
+  let inProgressIssues = useSelector(inProgressIssuesValue);
+  let doneIssues = useSelector(doneIssuesValue);
 
   useEffect(() => {
     url &&
@@ -69,18 +67,11 @@ const Boards = (): JSX.Element => {
           }
 
           if (!toDo.data) {
-            // return Notiflix.Notify.failure('Whoops, something went wrong with ToDo issues!');
             return app.message.error('Whoops, something went wrong with ToDo issues!');
           }
           if (toDo.data.length === 0) {
-            // return Notiflix.Notify.failure('There are no ToDo issues!');
             return app.message.error('There are no ToDo issues!');
           }
-          // else if (toDo.data.length === 0) {
-          //   setRemoveButtonToDo(true);
-
-          //   return Notiflix.Notify.failure('Whoops, no ToDo issues more!');
-          // }
 
           const filtered = getFilteredIssues(changes, repo, toDo.data, 'ToDo');
 
@@ -89,7 +80,6 @@ const Boards = (): JSX.Element => {
             : dispatch(nextPageToDoIssues(filtered));
           setToDoState(toDoIssues);
         } catch (error) {
-          // Notiflix.Notify.warning((error as AxiosError).message);
           app.message.warning((error as AxiosError).message);
         } finally {
           setIsLoadingToDo(false);
@@ -117,18 +107,11 @@ const Boards = (): JSX.Element => {
           }
 
           if (!inProgress.data) {
-            // return Notiflix.Notify.failure('Whoops, something went wrong with InProgress issues!');
             return app.message.error('Whoops, something went wrong with InProgress issues!');
           }
           if (inProgress.data.length === 0) {
-            // return Notiflix.Notify.failure('There are no InProgress issues!');
             return app.message.error('There are no InProgress issues!');
           }
-          // else if (inProgress.data.length === 0) {
-          //   setRemoveButtonInProgress(true);
-
-          //   return Notiflix.Notify.failure('Whoops, no In Progress issues more!');
-          // }
 
           const filtered = getFilteredIssues(changes, repo, inProgress.data, 'In Progress');
 
@@ -137,7 +120,6 @@ const Boards = (): JSX.Element => {
             : dispatch(nextPageInProgressIssues(filtered));
           setInProgressState(inProgressIssues);
         } catch (error) {
-          // Notiflix.Notify.warning((error as AxiosError).message);
           app.message.warning((error as AxiosError).message);
         } finally {
           setIsLoadingInProgress(false);
@@ -162,19 +144,11 @@ const Boards = (): JSX.Element => {
             setNextPageDone(true);
           }
           if (!done.data) {
-            // return Notiflix.Notify.failure('Whoops, something went wrong with Done issues!');
             return app.message.error('Whoops, something went wrong with Done issues!');
           }
           if (done.data.length === 0) {
-            // return Notiflix.Notify.failure('There are no Done issues!');
             return app.message.error('There are no Done issues!');
           }
-
-          // else if (done.data.length === 0) {
-          //   setRemoveButtonDone(true);
-
-          //   return Notiflix.Notify.failure('Whoops, no Done issues more!');
-          // }
 
           const filtered = getFilteredIssues(changes, repo, done.data, 'Done');
 
@@ -183,7 +157,6 @@ const Boards = (): JSX.Element => {
             : dispatch(nextPageDoneIssues(filtered));
           setDoneState(doneIssues);
         } catch (error) {
-          // Notiflix.Notify.warning((error as AxiosError).message);
           app.message.warning((error as AxiosError).message);
         } finally {
           setIsLoadingDone(false);
@@ -202,9 +175,6 @@ const Boards = (): JSX.Element => {
   const [backgroundDone, setBackgroundDone] = useState<string>('white');
 
   const setBackGround = (color: string, column: string) => {
-    const red: string = 'rgba(185, 0, 0, 0.1)';
-    const green: string = 'rgba(0, 185, 107, 0.1)';
-
     if (color === 'white') {
       setBackgroundToDo('white');
       setBackgroundInProgress('white');
@@ -213,23 +183,23 @@ const Boards = (): JSX.Element => {
     if (color === 'red') {
       switch (column) {
         case 'ToDo': {
-          setBackgroundToDo(red);
-          setBackgroundInProgress(green);
-          setBackgroundDone(green);
+          setBackgroundToDo(RED);
+          setBackgroundInProgress(GREEN);
+          setBackgroundDone(GREEN);
           break;
         }
 
         case 'InProgress': {
-          setBackgroundToDo(green);
-          setBackgroundInProgress(red);
-          setBackgroundDone(green);
+          setBackgroundToDo(GREEN);
+          setBackgroundInProgress(RED);
+          setBackgroundDone(GREEN);
           break;
         }
 
         case 'Done': {
-          setBackgroundToDo(green);
-          setBackgroundInProgress(green);
-          setBackgroundDone(red);
+          setBackgroundToDo(GREEN);
+          setBackgroundInProgress(GREEN);
+          setBackgroundDone(RED);
           break;
         }
 

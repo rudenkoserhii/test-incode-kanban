@@ -1,3 +1,3 @@
-export { getFilteredIssues } from './getFilteredIssues';
-export { getTitles } from './getTitles';
-export { checkNextPage } from './checkNextPage';
+export { getFilteredIssues } from 'helpers/getFilteredIssues';
+export { getTitles } from 'helpers/getTitles';
+export { checkNextPage } from 'helpers/checkNextPage';

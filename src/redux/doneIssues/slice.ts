@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ActionType, IssueType } from '../../types';
+import { ActionType, IssueType } from 'types';
 
 const initialState: { value: IssueType[] } = {
   value: [],

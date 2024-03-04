@@ -1,8 +1,8 @@
 import { Card, Col, List, Button, Spin } from 'antd';
 import { nanoid } from 'nanoid';
-import Movable from './Movable';
 import { useDrop } from 'react-dnd';
-import { IssueType } from '../../types';
+import Movable from 'components/Column/Movable';
+import { IssueType } from 'types';
 
 type PropsColumn = {
   column: IssueType[];

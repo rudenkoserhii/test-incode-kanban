@@ -1,5 +1,5 @@
 import { Card, Typography } from 'antd';
-import { IssueType } from '../../types';
+import { IssueType } from 'types';
 
 const { Text } = Typography;
 

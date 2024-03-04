@@ -2,26 +2,27 @@
   "root": true,
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
   },
   "plugins": ["unused-imports", "@typescript-eslint", "prettier", "typesafe", "react"],
-  "extends": ["prettier"],
+  "extends": ["prettier", "plugin:import/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": true,
     },
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": "./tsconfig.json",
-    "warnOnUnsupportedTypeScriptVersion": false
+    "warnOnUnsupportedTypeScriptVersion": false,
   },
   "settings": {
     "import/resolver": {
       "typescript": {
-        "alwaysTryTypes": true
-      }
-    }
+        "alwaysTryTypes": true,
+        "paths": ["src"],
+      },
+    },
   },
   "rules": {
     "no-alert": 0,
@@ -56,33 +57,33 @@
     "react/jsx-no-useless-fragment": [
       1,
       {
-        "allowExpressions": true
-      }
+        "allowExpressions": true,
+      },
     ],
     "prefer-destructuring": [
       1,
       {
         "object": true,
-        "array": false
-      }
+        "array": false,
+      },
     ],
     "react/no-unstable-nested-components": [
       1,
       {
-        "allowAsProps": true
-      }
+        "allowAsProps": true,
+      },
     ],
     "@typescript-eslint/no-unused-vars": [
       1,
       {
-        "args": "none"
-      }
+        "args": "none",
+      },
     ],
     "react/jsx-no-duplicate-props": [
       1,
       {
-        "ignoreCase": false
-      }
+        "ignoreCase": false,
+      },
     ],
     "unused-imports/no-unused-imports": 0,
     "unused-imports/no-unused-vars": [
@@ -91,8 +92,8 @@
         "vars": "all",
         "varsIgnorePattern": "^_",
         "args": "after-used",
-        "argsIgnorePattern": "^_"
-      }
+        "argsIgnorePattern": "^_",
+      },
     ],
     "padding-line-between-statements": [
       "warn",
@@ -101,11 +102,11 @@
       {
         "blankLine": "any",
         "prev": ["const", "let", "var"],
-        "next": ["const", "let", "var"]
+        "next": ["const", "let", "var"],
       },
       { "blankLine": "always", "prev": "directive", "next": "*" },
       { "blankLine": "any", "prev": "directive", "next": "directive" },
-      { "blankLine": "always", "prev": ["case", "default"], "next": "*" }
-    ]
-  }
+      { "blankLine": "always", "prev": ["case", "default"], "next": "*" },
+    ],
+  },
 }

@@ -1,6 +1,7 @@
 {
   "name": "test-incode-kanban",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
@@ -8,6 +9,7 @@
     "@types/node": "^16.18.85",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
+    "@types/react-redux": "^7.1.33",
     "antd": "^5.14.2",
     "axios": "^1.6.7",
     "mobx": "^6.12.0",
@@ -44,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
     "cypress": "^13.6.6",

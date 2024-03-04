@@ -1,4 +1,4 @@
-import { IssueType } from './issue.type';
+import { IssueType } from 'types';
 
 type StateChanges = {
   value: StateChangesItem[] | [];

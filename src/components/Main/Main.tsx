@@ -1,9 +1,9 @@
 import { Row, Col, Divider } from 'antd';
-import Title from '../Title/Title';
-import Rote from '../Rote/Rote';
-import Boards from '../Boards/Boards';
+import Title from 'components/Title/Title';
+import Rote from 'components/Rote/Rote';
+import Boards from 'components/Boards/Boards';
 
-export const Main = (): JSX.Element => (
+const Main = (): JSX.Element => (
   <main>
     <div>
       <Divider orientation="right">Title</Divider>
@@ -19,3 +19,5 @@ export const Main = (): JSX.Element => (
     <Boards />
   </main>
 );
+
+export default Main;

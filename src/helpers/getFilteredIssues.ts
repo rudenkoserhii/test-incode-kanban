@@ -1,5 +1,4 @@
-import { StateChanges } from '../types/changes.type';
-import { IssueType } from '../types/issue.type';
+import { StateChanges, IssueType } from 'types';
 
 export const getFilteredIssues = (
   changes: StateChanges['value'],

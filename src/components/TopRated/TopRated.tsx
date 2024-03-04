@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import axios, { AxiosError } from 'axios';
-import { BASE_URL_TOP } from '../../constants/constants';
 import { Divider, Dropdown, Skeleton, Space, App } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { LabelProps } from '../../types';
+import { DownOutlined } from '@ant-design/icons';
+import axios, { AxiosError } from 'axios';
+import { BASE_URL_TOP } from 'constants/constants';
+import { LabelProps } from 'types';
 
 const TopRated = (): JSX.Element => {
   const [repos, setRepos] = useState<{ name: string; url: string }[] | []>([]);

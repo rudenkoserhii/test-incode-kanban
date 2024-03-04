@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { repoValue } from '../../redux/repo/selectors';
-import Notiflix from 'notiflix';
-import axios, { AxiosError } from 'axios';
-import { BASE_URL_STARS, DEFAULT_STARS } from '../../constants/constants';
 import { App } from 'antd';
+import axios, { AxiosError } from 'axios';
+import { BASE_URL_STARS, DEFAULT_STARS } from 'constants/constants';
+import { repoValue } from '../../redux/repo/selectors';
 
 const Rote = (): JSX.Element | null => {
   const [stars, setStars] = useState<number>(DEFAULT_STARS);

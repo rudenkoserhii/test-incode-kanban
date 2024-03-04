@@ -1,11 +1,11 @@
-import { ConfigProvider, Divider, FloatButton, App as AntApp } from 'antd';
-import Input from './components/Input/Input';
-import { Main } from './components/Main/Main';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { ConfigProvider, Divider, FloatButton, App as AntApp } from 'antd';
+import Input from 'components/Input/Input';
+import Logo from 'components/Logo/Logo';
+import Main from 'components/Main/Main';
+import TopRated from 'components/TopRated/TopRated';
 import { persistor, store } from './redux/store';
-import TopRated from './components/TopRated/TopRated';
-import Logo from './components/Logo/Logo';
 
 function App() {
   return (

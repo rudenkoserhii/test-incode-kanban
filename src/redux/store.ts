@@ -6,7 +6,7 @@ import { inProgressIssuesSlice } from './inProgressIssues/slice';
 import { doneIssuesSlice } from './doneIssues/slice';
 import { changesSlice } from './changes/slice';
 import { repoSlice, StateRepo } from './repo/slice';
-import { StateChanges } from '../types';
+import { StateChanges } from 'types';
 
 export type RootState = ReturnType<typeof store.getState>;
 

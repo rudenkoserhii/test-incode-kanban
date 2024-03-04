@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import { repoValue } from '../../redux/repo/selectors';
 import { Typography } from 'antd';
-import { getTitles } from '../../helpers/getTitles';
 import { RightOutlined } from '@ant-design/icons';
+import { getTitles } from 'helpers';
+import { repoValue } from '../../redux/repo/selectors';
 
 const { Link } = Typography;
 

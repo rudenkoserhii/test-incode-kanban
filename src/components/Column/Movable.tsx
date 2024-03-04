@@ -1,19 +1,19 @@
 import { useRef } from 'react';
-import { List } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { List } from 'antd';
 import { useDrag, useDrop } from 'react-dnd';
-import { getToDoIssues } from '../../redux/toDoIssues/slice';
-import { getInProgressIssues } from '../../redux/inProgressIssues/slice';
-import { getDoneIssues } from '../../redux/doneIssues/slice';
-import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
-import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
-import { doneIssuesValue } from '../../redux/doneIssues/selectors';
-import { COLUMN_NAMES } from '../../constants/constants';
-import { addChange } from '../../redux/changes/slice';
+import Issue from 'components/Issue/Issue';
+import { COLUMN_NAMES } from 'constants/constants';
+import { AppDispatch } from 'redux/store';
+import { IssueType } from 'types';
 import { repoValue } from '../../redux/repo/selectors';
-import Issue from '../Issue/Issue';
-import { IssueType } from '../../types';
-import { AppDispatch } from '../../redux/store';
+import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
+import { addChange } from '../../redux/changes/slice';
+import { doneIssuesValue } from '../../redux/doneIssues/selectors';
+import { getDoneIssues } from '../../redux/doneIssues/slice';
+import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
+import { getInProgressIssues } from '../../redux/inProgressIssues/slice';
+import { getToDoIssues } from '../../redux/toDoIssues/slice';
 
 type PropsMovable = {
   issue: IssueType;

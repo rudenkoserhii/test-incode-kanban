@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Form, Input as AntInput, Button } from 'antd';
 import { useDispatch } from 'react-redux';
-import { getRepo } from '../../redux/repo/slice';
-import { AppDispatch } from '../../redux/store';
+import { Form, Input as AntInput, Button } from 'antd';
 import { SnippetsOutlined } from '@ant-design/icons';
 import { ValidateStatus } from 'antd/es/form/FormItem';
+import { AppDispatch } from 'redux/store';
+import { getRepo } from '../../redux/repo/slice';
 
 const Input = (): JSX.Element => {
   const dispatch: AppDispatch = useDispatch();

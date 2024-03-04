@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { StateChanges, ActionChangesType, StateChangesItem } from '../../types';
+import { StateChanges, ActionChangesType, StateChangesItem } from 'types';
 
 const initialState: StateChanges = {
   value: [],
@@ -9,10 +9,10 @@ export const changesSlice = createSlice({
   name: 'changes',
   initialState: initialState,
   reducers: {
-    getChanges(state, action) {
+    getChanges(state: StateChanges, action) {
       state.value = action.payload;
     },
-    addChange(state, action: ActionChangesType) {
+    addChange(state: StateChanges, action: ActionChangesType) {
       const indexRepo = state.value?.findIndex((element) => element.repo === action.payload.repo);
       const indexId =
         indexRepo !== undefined
