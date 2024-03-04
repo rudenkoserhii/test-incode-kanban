@@ -35,25 +35,26 @@ const TopRated = (): JSX.Element => {
 
   const items: MenuProps['items'] = repos.map(({ name, url }, id) => ({
     label: (
-      <span style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+      <span
+        style={{ display: 'flex', justifyContent: 'space-between', width: 'calc(100vw - 90px)' }}
+      >
         <span
-        // style={{
-        //   display: 'inline-block',
-        //   overflow: 'hidden',
-        //   textOverflow: 'ellipsis',
-        //   whiteSpace: 'nowrap',
-        //   maxWidth: '30%',
-        // }}
+          style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            flex: 1,
+          }}
         >
           <b>{name.replace(name[0], name[0].toUpperCase())}</b>
         </span>
         <span
           style={{
-            display: 'inline-block',
+            textAlign: 'right',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            maxWidth: '70%',
+            flex: 3,
           }}
         >
           {url}
