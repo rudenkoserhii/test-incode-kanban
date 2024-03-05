@@ -45,7 +45,7 @@ const Column = ({
     <Col className="issues">
       <Card className="full-width-height" title={title} style={{ background }}>
         <div ref={drop} className="full-width-height">
-          <ul className="ant-list">
+          <ul className={`ant-list ${title.replaceAll(' ', '').toLowerCase()}`}>
             {column.map((issue) => (
               <Movable
                 issue={issue}
