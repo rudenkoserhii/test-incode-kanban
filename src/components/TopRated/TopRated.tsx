@@ -74,7 +74,7 @@ const TopRated = (): JSX.Element => {
 
     if (spanSecond && spanFirst) {
       navigator.clipboard.writeText(spanSecond.toString());
-      app.message.info(`Link to repo ${spanFirst.toString()} copied to the ClipBoard!`);
+      // app.message.info(`Link to repo ${spanFirst.toString()} copied to the ClipBoard!`);
     }
   };
 

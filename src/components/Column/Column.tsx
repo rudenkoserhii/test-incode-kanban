@@ -1,4 +1,4 @@
-import { Card, Col, List, Button, Spin } from 'antd';
+import { Card, Col, Button, Spin } from 'antd';
 import { nanoid } from 'nanoid';
 import { useDrop } from 'react-dnd';
 import Movable from 'components/Column/Movable';
@@ -45,7 +45,7 @@ const Column = ({
     <Col className="issues">
       <Card className="full-width-height" title={title} style={{ background }}>
         <div ref={drop} className="full-width-height">
-          <List dataSource={column}>
+          <ul className="ant-list">
             {column.map((issue) => (
               <Movable
                 issue={issue}
@@ -54,7 +54,7 @@ const Column = ({
                 didDrop={() => backgroundUp('white')}
               />
             ))}
-          </List>
+          </ul>
           {removeButton && (
             <Button className="loadMore" type="primary" onClick={() => setPage(title)}>
               Load more
