@@ -6,6 +6,18 @@ export const getFilteredIssues = (
   data: IssueType[],
   column: string
 ) => {
+  data = (data as IssueType[]).map((item, idx) => ({
+    id: item.id,
+    order: idx + 1,
+    title: item.title,
+    number: item.number,
+    updated_at: item.updated_at,
+    user: {
+      login: item.user.login,
+    },
+    comments: item.comments,
+  }));
+
   let filtered = [];
 
   if (changes.some((changedItem) => changedItem.repo === repo)) {
