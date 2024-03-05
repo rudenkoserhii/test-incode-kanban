@@ -8,7 +8,7 @@ type ActionType = {
 type ActionChangesType = {
   payload: {
     repo: string;
-    id: number;
+    id: string;
     columnIn: string;
     columnOut: string;
     issue: IssueType;
