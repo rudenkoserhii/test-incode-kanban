@@ -7,7 +7,7 @@ type StateChanges = {
 type StateChangesItem = {
   repo: string;
   data: {
-    id: number;
+    id: string;
     columnIn: string;
     columnOut: string;
     issue: IssueType;

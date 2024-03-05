@@ -136,6 +136,8 @@ li {
   border-radius: 20px;
   box-shadow: 0px 0px 2px 2px #00b96b;
   width: 100%;
+
+  pointer-events: none;
 }
 
 .movable:hover,

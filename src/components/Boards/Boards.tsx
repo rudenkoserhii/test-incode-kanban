@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { App, Divider, Row } from 'antd';
 import axios, { AxiosError } from 'axios';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import Column from 'components/Column/Column';
-import { BASE_URL, COLUMN_NAMES, FIRST_PAGE, GREEN, RED } from 'constants/constants';
+import {
+  BASE_URL,
+  COLUMN_NAMES,
+  FIRST_PAGE,
+  SIBLING_COLUMN,
+  CURRENT_COLUMN,
+  DEFAULT_COLOR,
+} from 'constants/constants';
 import { checkNextPage, getFilteredIssues } from 'helpers';
 import { AppDispatch } from 'redux/store';
 import { IssueType } from 'types';
@@ -169,36 +174,36 @@ const Boards = (): JSX.Element => {
     title === 'Done' && setPageDone((prev) => prev + 1);
   }
 
-  const [backgroundToDo, setBackgroundToDo] = useState<string>('white');
-  const [backgroundInProgress, setBackgroundInProgress] = useState<string>('white');
-  const [backgroundDone, setBackgroundDone] = useState<string>('white');
+  const [backgroundToDo, setBackgroundToDo] = useState<string>(DEFAULT_COLOR);
+  const [backgroundInProgress, setBackgroundInProgress] = useState<string>(DEFAULT_COLOR);
+  const [backgroundDone, setBackgroundDone] = useState<string>(DEFAULT_COLOR);
 
   const setBackGround = (color: string, column: string) => {
-    if (color === 'white') {
-      setBackgroundToDo('white');
-      setBackgroundInProgress('white');
-      setBackgroundDone('white');
+    if (color === 'default') {
+      setBackgroundToDo(DEFAULT_COLOR);
+      setBackgroundInProgress(DEFAULT_COLOR);
+      setBackgroundDone(DEFAULT_COLOR);
     }
-    if (color === 'red') {
+    if (color === 'current') {
       switch (column) {
         case 'ToDo': {
-          setBackgroundToDo(RED);
-          setBackgroundInProgress(GREEN);
-          setBackgroundDone(GREEN);
+          setBackgroundToDo(CURRENT_COLUMN);
+          setBackgroundInProgress(SIBLING_COLUMN);
+          setBackgroundDone(SIBLING_COLUMN);
           break;
         }
 
         case 'InProgress': {
-          setBackgroundToDo(GREEN);
-          setBackgroundInProgress(RED);
-          setBackgroundDone(GREEN);
+          setBackgroundToDo(SIBLING_COLUMN);
+          setBackgroundInProgress(CURRENT_COLUMN);
+          setBackgroundDone(SIBLING_COLUMN);
           break;
         }
 
         case 'Done': {
-          setBackgroundToDo(GREEN);
-          setBackgroundInProgress(GREEN);
-          setBackgroundDone(RED);
+          setBackgroundToDo(SIBLING_COLUMN);
+          setBackgroundInProgress(SIBLING_COLUMN);
+          setBackgroundDone(CURRENT_COLUMN);
           break;
         }
 
@@ -212,35 +217,33 @@ const Boards = (): JSX.Element => {
     <div>
       <Divider orientation="right">Issues</Divider>
       <Row className="boards__row">
-        <DndProvider backend={HTML5Backend}>
-          <Column
-            title={TO_DO}
-            removeButton={nextPageToDo}
-            column={toDoIssues}
-            setPage={(title) => setPage(title)}
-            background={backgroundToDo}
-            backgroundUp={(color: string) => setBackGround(color, 'ToDo')}
-            isLoading={isLoadingToDo}
-          />
-          <Column
-            title={IN_PROGRESS}
-            removeButton={nextPageInProgress}
-            column={inProgressIssues}
-            setPage={(title) => setPage(title)}
-            background={backgroundInProgress}
-            backgroundUp={(color: string) => setBackGround(color, 'InProgress')}
-            isLoading={isLoadingInProgress}
-          />
-          <Column
-            title={DONE}
-            removeButton={nextPageDone}
-            column={doneIssues}
-            setPage={(title) => setPage(title)}
-            background={backgroundDone}
-            backgroundUp={(color: string) => setBackGround(color, 'Done')}
-            isLoading={isLoadingDone}
-          />
-        </DndProvider>
+        <Column
+          title={TO_DO}
+          removeButton={nextPageToDo}
+          column={toDoIssues}
+          setPage={(title) => setPage(title)}
+          background={backgroundToDo}
+          backgroundUp={(color: string) => setBackGround(color, 'ToDo')}
+          isLoading={isLoadingToDo}
+        />
+        <Column
+          title={IN_PROGRESS}
+          removeButton={nextPageInProgress}
+          column={inProgressIssues}
+          setPage={(title) => setPage(title)}
+          background={backgroundInProgress}
+          backgroundUp={(color: string) => setBackGround(color, 'InProgress')}
+          isLoading={isLoadingInProgress}
+        />
+        <Column
+          title={DONE}
+          removeButton={nextPageDone}
+          column={doneIssues}
+          setPage={(title) => setPage(title)}
+          background={backgroundDone}
+          backgroundUp={(color: string) => setBackGround(color, 'Done')}
+          isLoading={isLoadingDone}
+        />
       </Row>
     </div>
   );

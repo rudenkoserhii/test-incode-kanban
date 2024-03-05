@@ -4,9 +4,6 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["cypress", "node"],
     "baseUrl": "src",
-    "paths": {
-      "redux/*": ["redux/*"]
-    },
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,5 +18,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "cypress", "cypress.config.ts"]
+  "include": ["src", "cypress", "cypress.config.ts", "redux"]
 }

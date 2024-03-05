@@ -17,5 +17,6 @@ export const DEFAULT_STARS: number = 0;
 
 export const FIRST_PAGE: number = 1;
 
-export const RED: string = 'rgba(185, 0, 0, 0.1)';
-export const GREEN: string = 'rgba(0, 185, 107, 0.1)';
+export const CURRENT_COLUMN: string = 'rgba(255, 255, 0, 0.1)';
+export const SIBLING_COLUMN: string = 'rgba(0, 185, 107, 0.1)';
+export const DEFAULT_COLOR: string = 'rgba(255, 255, 255, 1)';

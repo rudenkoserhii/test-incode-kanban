@@ -1,5 +1,6 @@
 type IssueType = {
-  id: number;
+  id: string;
+  order: number;
   title: string;
   number: number;
   updated_at: Date;
