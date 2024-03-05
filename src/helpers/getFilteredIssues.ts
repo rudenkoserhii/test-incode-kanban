@@ -25,9 +25,7 @@ export const getFilteredIssues = (
       (firstSearch) =>
         !changes
           .find((secondSearch) => secondSearch.repo === repo)
-          ?.data.some(
-            (thirdSearch) => firstSearch.id === thirdSearch.id && column === thirdSearch.columnOut
-          )
+          ?.data.some((thirdSearch) => firstSearch.id === thirdSearch.id)
     );
     changes
       .find((firstSearch) => firstSearch.repo === repo)
