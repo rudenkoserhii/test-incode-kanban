@@ -54,7 +54,7 @@ const Column = ({
       issue: issue,
     };
   }
-
+  console.log(inProgressIssues);
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
 
@@ -75,288 +75,303 @@ const Column = ({
 
     const targetIssue = e.target as HTMLDivElement;
     const { id: targetIssueId, dataset } = targetIssue;
+
     const targetIssueColumn = dataset['column'];
     const targetIssueOrder = Number(dataset['order']);
 
     if (data) {
-      Object.values(COLUMN_NAMES).forEach(() => {
-        if (droppedIssueColumn !== targetIssueColumn) {
-          switch (droppedIssueColumn) {
-            case 'ToDo':
-              const filteredToDoIssues = toDoIssues
-                .filter((element) => element.id !== droppedIssueId)
-                .map((element) => ({
-                  ...element,
-                  order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
-                }));
-
-              dispatch(getToDoIssues(filteredToDoIssues));
-              dispatch(
-                addChange(
-                  objChange(
-                    targetIssueColumn as string,
-                    droppedIssueColumn,
-                    droppedIssueId,
-                    droppedIssue
-                  )
-                )
-              );
-              filteredToDoIssues.forEach((issue) =>
-                dispatch(
-                  addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
-                )
-              );
-              break;
-
-            case 'In Progress':
-              const filteredInProgressIssues = inProgressIssues
-                .filter((element) => element.id !== droppedIssueId)
-                .map((element) => ({
-                  ...element,
-                  order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
-                }));
-
-              dispatch(getInProgressIssues(filteredInProgressIssues));
-              dispatch(
-                addChange(
-                  objChange(
-                    targetIssueColumn as string,
-                    droppedIssueColumn,
-                    droppedIssueId,
-                    droppedIssue
-                  )
-                )
-              );
-              filteredInProgressIssues.forEach((issue) =>
-                dispatch(
-                  addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
-                )
-              );
-              break;
-
-            case 'Done':
-              const filteredDoneIssues = doneIssues
-                .filter((element) => element.id !== droppedIssueId)
-                .map((element) => ({
-                  ...element,
-                  order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
-                }));
-
-              dispatch(getDoneIssues(filteredDoneIssues));
-              dispatch(
-                addChange(
-                  objChange(
-                    targetIssueColumn as string,
-                    droppedIssueColumn,
-                    droppedIssueId,
-                    droppedIssue
-                  )
-                )
-              );
-              filteredDoneIssues.forEach((issue) =>
-                dispatch(
-                  addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
-                )
-              );
-              break;
-
-            default:
-              return;
-          }
-
-          switch (targetIssueColumn) {
-            case 'ToDo':
-              const updatedToDoIssues = [...toDoIssues, droppedIssue].map((element) => ({
+      if (droppedIssueColumn !== targetIssueColumn) {
+        switch (droppedIssueColumn) {
+          case 'ToDo':
+            const filteredToDoIssues = toDoIssues
+              .filter((element) => element.id !== droppedIssueId)
+              .map((element) => ({
                 ...element,
-                order:
-                  element.order >= droppedIssueOrder && element.id !== droppedIssueId
-                    ? element.order + 1
-                    : element.order,
+                order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
               }));
 
-              dispatch(getToDoIssues(updatedToDoIssues));
-              updatedToDoIssues.forEach((issue) => {
-                if (issue.id !== droppedIssueId) {
-                  dispatch(
-                    addChange(objChange(targetIssueColumn, targetIssueColumn, issue.id, issue))
-                  );
-                }
-              });
+            dispatch(getToDoIssues(filteredToDoIssues));
+            dispatch(
+              addChange(
+                objChange(
+                  targetIssueColumn as string,
+                  droppedIssueColumn,
+                  droppedIssueId,
+                  droppedIssue
+                )
+              )
+            );
+            filteredToDoIssues.forEach((issue) =>
+              dispatch(
+                addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+              )
+            );
+            break;
 
-              break;
-
-            case 'In Progress':
-              const updatedInProgressIssues = [...inProgressIssues, droppedIssue].map(
-                (element) => ({
-                  ...element,
-                  order:
-                    element.order >= droppedIssueOrder && element.id !== droppedIssueId
-                      ? element.order + 1
-                      : element.order,
-                })
-              );
-
-              dispatch(getInProgressIssues(updatedInProgressIssues));
-              updatedInProgressIssues.forEach((issue) => {
-                if (issue.id !== droppedIssueId) {
-                  dispatch(
-                    addChange(objChange(targetIssueColumn, targetIssueColumn, issue.id, issue))
-                  );
-                }
-              });
-
-              break;
-
-            case 'Done':
-              const updatedDoneIssues = [...doneIssues, droppedIssue].map((element) => ({
+          case 'In Progress':
+            const filteredInProgressIssues = inProgressIssues
+              .filter((element) => element.id !== droppedIssueId)
+              .map((element) => ({
                 ...element,
-                order:
-                  element.order >= droppedIssueOrder && element.id !== droppedIssueId
-                    ? element.order + 1
-                    : element.order,
+                order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
               }));
 
-              dispatch(getDoneIssues(updatedDoneIssues));
-              updatedDoneIssues.forEach((issue) => {
-                if (issue.id !== droppedIssueId) {
-                  dispatch(
-                    addChange(objChange(targetIssueColumn, targetIssueColumn, issue.id, issue))
-                  );
-                }
-              });
-
-              break;
-
-            default:
-              return;
-          }
-        } else if (droppedIssueColumn === targetIssueColumn && droppedIssueId !== targetIssueId) {
-          switch (droppedIssueColumn) {
-            case 'ToDo':
-              const updatedToDoIssues = toDoIssues.map((element) => {
-                let { order } = element;
-
-                if (element.id === droppedIssueId) {
-                  order = targetIssueOrder;
-                } else if (
-                  droppedIssueOrder > targetIssueOrder &&
-                  element.order >= targetIssueOrder &&
-                  element.order < droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                } else if (
-                  droppedIssueOrder > targetIssueOrder &&
-                  element.order > droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                } else if (
-                  droppedIssueOrder < targetIssueOrder &&
-                  element.order <= targetIssueOrder &&
-                  element.order > droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                }
-
-                return {
-                  ...element,
-                  order,
-                };
-              });
-
-              dispatch(getToDoIssues(updatedToDoIssues));
-              updatedToDoIssues.forEach((issue) =>
-                dispatch(
-                  addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+            dispatch(getInProgressIssues(filteredInProgressIssues));
+            dispatch(
+              addChange(
+                objChange(
+                  targetIssueColumn as string,
+                  droppedIssueColumn,
+                  droppedIssueId,
+                  droppedIssue
                 )
-              );
+              )
+            );
+            filteredInProgressIssues.forEach((issue) =>
+              dispatch(
+                addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+              )
+            );
+            break;
 
-              break;
+          case 'Done':
+            const filteredDoneIssues = doneIssues
+              .filter((element) => element.id !== droppedIssueId)
+              .map((element) => ({
+                ...element,
+                order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
+              }));
 
-            case 'In Progress':
-              const updatedInProgressIssues = inProgressIssues.map((element) => {
-                let { order } = element;
-
-                if (element.id === droppedIssueId) {
-                  order = targetIssueOrder;
-                } else if (
-                  droppedIssueOrder > targetIssueOrder &&
-                  element.order >= targetIssueOrder &&
-                  element.order < droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                } else if (
-                  droppedIssueOrder > targetIssueOrder &&
-                  element.order > droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                } else if (
-                  droppedIssueOrder < targetIssueOrder &&
-                  element.order <= targetIssueOrder &&
-                  element.order > droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                }
-
-                return {
-                  ...element,
-                  order,
-                };
-              });
-
-              dispatch(getInProgressIssues(updatedInProgressIssues));
-              updatedInProgressIssues.forEach((issue) =>
-                dispatch(
-                  addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+            dispatch(getDoneIssues(filteredDoneIssues));
+            dispatch(
+              addChange(
+                objChange(
+                  targetIssueColumn as string,
+                  droppedIssueColumn,
+                  droppedIssueId,
+                  droppedIssue
                 )
-              );
+              )
+            );
+            filteredDoneIssues.forEach((issue) =>
+              dispatch(
+                addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+              )
+            );
+            break;
 
-              break;
-
-            case 'Done':
-              const updatedDoneIssues = doneIssues.map((element) => {
-                let { order } = element;
-
-                if (element.id === droppedIssueId) {
-                  order = targetIssueOrder;
-                } else if (
-                  droppedIssueOrder > targetIssueOrder &&
-                  element.order >= targetIssueOrder &&
-                  element.order < droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                } else if (
-                  droppedIssueOrder > targetIssueOrder &&
-                  element.order > droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                } else if (
-                  droppedIssueOrder < targetIssueOrder &&
-                  element.order <= targetIssueOrder &&
-                  element.order > droppedIssueOrder
-                ) {
-                  order = element.order - 1;
-                }
-
-                return {
-                  ...element,
-                  order,
-                };
-              });
-
-              dispatch(getDoneIssues(updatedDoneIssues));
-              updatedDoneIssues.forEach((issue) =>
-                dispatch(
-                  addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
-                )
-              );
-
-              break;
-
-            default:
-              return;
-          }
+          default:
+            return;
         }
-      });
+
+        switch (targetIssueColumn) {
+          case 'ToDo':
+            const updatedToDoIssues = [...toDoIssues, droppedIssue].map((element) => {
+              let { order } = element;
+
+              if (element.id === droppedIssueId) {
+                order = !isNaN(targetIssueOrder) ? targetIssueOrder : toDoIssues.length + 1;
+              } else if (element.order >= targetIssueOrder && !isNaN(targetIssueOrder)) {
+                order = element.order + 1;
+              }
+
+              return { ...element, order };
+            });
+
+            dispatch(getToDoIssues(updatedToDoIssues));
+            updatedToDoIssues.forEach((issue) => {
+              if (issue.id !== droppedIssueId) {
+                dispatch(
+                  addChange(objChange(targetIssueColumn, targetIssueColumn, issue.id, issue))
+                );
+              }
+            });
+
+            break;
+
+          case 'In Progress':
+            const updatedInProgressIssues = [...inProgressIssues, droppedIssue].map((element) => {
+              let { order } = element;
+
+              if (element.id === droppedIssueId) {
+                order = !isNaN(targetIssueOrder) ? targetIssueOrder : inProgressIssues.length + 1;
+              } else if (element.order >= targetIssueOrder && !isNaN(targetIssueOrder)) {
+                order = element.order + 1;
+              }
+
+              return { ...element, order };
+            });
+
+            dispatch(getInProgressIssues(updatedInProgressIssues));
+            updatedInProgressIssues.forEach((issue) => {
+              if (issue.id !== droppedIssueId) {
+                dispatch(
+                  addChange(objChange(targetIssueColumn, targetIssueColumn, issue.id, issue))
+                );
+              }
+            });
+
+            break;
+
+          case 'Done':
+            const updatedDoneIssues = [...doneIssues, droppedIssue].map((element) => {
+              let { order } = element;
+
+              if (element.id === droppedIssueId) {
+                order = !isNaN(targetIssueOrder) ? targetIssueOrder : doneIssues.length + 1;
+              } else if (element.order >= targetIssueOrder && !isNaN(targetIssueOrder)) {
+                order = element.order + 1;
+              }
+
+              return { ...element, order };
+            });
+
+            dispatch(getDoneIssues(updatedDoneIssues));
+            updatedDoneIssues.forEach((issue) => {
+              if (issue.id !== droppedIssueId) {
+                dispatch(
+                  addChange(objChange(targetIssueColumn, targetIssueColumn, issue.id, issue))
+                );
+              }
+            });
+
+            break;
+
+          default:
+            return;
+        }
+      } else if (droppedIssueColumn === targetIssueColumn && droppedIssueId !== targetIssueId) {
+        switch (droppedIssueColumn) {
+          case 'ToDo':
+            const updatedToDoIssues = toDoIssues.map((element) => {
+              let { order } = element;
+
+              if (element.id === droppedIssueId) {
+                order = isNaN(targetIssueOrder) ? toDoIssues.length : targetIssueOrder;
+              } else if (
+                droppedIssueOrder > targetIssueOrder &&
+                element.order >= targetIssueOrder &&
+                element.order < droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              } else if (
+                droppedIssueOrder > targetIssueOrder &&
+                element.order > droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              } else if (isNaN(targetIssueOrder) && element.order > droppedIssueOrder) {
+                order = element.order - 1;
+              } else if (
+                droppedIssueOrder < targetIssueOrder &&
+                element.order <= targetIssueOrder &&
+                element.order > droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              }
+
+              return {
+                ...element,
+                order,
+              };
+            });
+
+            dispatch(getToDoIssues(updatedToDoIssues));
+            updatedToDoIssues.forEach((issue) =>
+              dispatch(
+                addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+              )
+            );
+
+            break;
+
+          case 'In Progress':
+            const updatedInProgressIssues = inProgressIssues.map((element) => {
+              let { order } = element;
+
+              if (element.id === droppedIssueId) {
+                order = isNaN(targetIssueOrder) ? toDoIssues.length : targetIssueOrder;
+              } else if (
+                droppedIssueOrder > targetIssueOrder &&
+                element.order >= targetIssueOrder &&
+                element.order < droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              } else if (
+                droppedIssueOrder > targetIssueOrder &&
+                element.order > droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              } else if (isNaN(targetIssueOrder) && element.order > droppedIssueOrder) {
+                order = element.order - 1;
+              } else if (
+                droppedIssueOrder < targetIssueOrder &&
+                element.order <= targetIssueOrder &&
+                element.order > droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              }
+
+              return {
+                ...element,
+                order,
+              };
+            });
+
+            dispatch(getInProgressIssues(updatedInProgressIssues));
+            updatedInProgressIssues.forEach((issue) =>
+              dispatch(
+                addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+              )
+            );
+
+            break;
+
+          case 'Done':
+            const updatedDoneIssues = doneIssues.map((element) => {
+              let { order } = element;
+
+              if (element.id === droppedIssueId) {
+                order = isNaN(targetIssueOrder) ? toDoIssues.length : targetIssueOrder;
+              } else if (
+                droppedIssueOrder > targetIssueOrder &&
+                element.order >= targetIssueOrder &&
+                element.order < droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              } else if (
+                droppedIssueOrder > targetIssueOrder &&
+                element.order > droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              } else if (isNaN(targetIssueOrder) && element.order > droppedIssueOrder) {
+                order = element.order - 1;
+              } else if (
+                droppedIssueOrder < targetIssueOrder &&
+                element.order <= targetIssueOrder &&
+                element.order > droppedIssueOrder
+              ) {
+                order = element.order - 1;
+              }
+
+              return {
+                ...element,
+                order,
+              };
+            });
+
+            dispatch(getDoneIssues(updatedDoneIssues));
+            updatedDoneIssues.forEach((issue) =>
+              dispatch(
+                addChange(objChange(droppedIssueColumn, droppedIssueColumn, issue.id, issue))
+              )
+            );
+
+            break;
+
+          default:
+            return;
+        }
+      }
     }
   };
 
@@ -367,6 +382,7 @@ const Column = ({
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           className="full-width-height"
+          data-column={title}
         >
           <ul className={`ant-list ${title.replaceAll(' ', '').toLowerCase()}`}>
             {column &&
