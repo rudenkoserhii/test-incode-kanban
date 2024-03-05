@@ -9,6 +9,19 @@ a {
   text-decoration: none;
 }
 
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  list-style-type: 0;
+}
+
+li {
+  padding: 12px 0px;
+}
+
 .ant-card-body {
   height: 100%;
 }

@@ -31,7 +31,7 @@ const Rote = (): JSX.Element | null => {
   }, [url]);
 
   return url ? (
-    <h2 className="stars">
+    <h2 className="stars" data-cy-title>
       {'\u2B50'}
       {stars > 1000 ? ` ${Math.ceil(stars / 1000)} K stars` : stars}
     </h2>

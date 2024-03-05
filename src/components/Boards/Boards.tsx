@@ -42,7 +42,6 @@ const Boards = (): JSX.Element => {
   const app = App.useApp();
 
   const repo = url.split('github.com/')[1];
-
   let toDoIssues = useSelector(toDoIssuesValue);
   let inProgressIssues = useSelector(inProgressIssuesValue);
   let doneIssues = useSelector(doneIssuesValue);

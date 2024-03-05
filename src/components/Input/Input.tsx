@@ -78,10 +78,20 @@ const Input = (): JSX.Element => {
             },
           ]}
         >
-          <AntInput allowClear placeholder="Please enter a repo URL" suffix={suffix} />
+          <AntInput
+            className="input-one__input"
+            allowClear
+            placeholder="Please enter a repo URL"
+            suffix={suffix}
+          />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={!isValid}>
+          <Button
+            className="input-one__button"
+            type="primary"
+            htmlType="submit"
+            disabled={!isValid}
+          >
             Load issues
           </Button>
         </Form.Item>
