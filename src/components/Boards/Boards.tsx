@@ -3,14 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { App, Divider, Row } from 'antd';
 import axios, { AxiosError } from 'axios';
 import Column from 'components/Column/Column';
-import {
-  BASE_URL,
-  COLUMN_NAMES,
-  FIRST_PAGE,
-  SIBLING_COLUMN,
-  CURRENT_COLUMN,
-  DEFAULT_COLOR,
-} from 'constants/constants';
+import { BASE_URL, COLUMN_NAMES, FIRST_PAGE } from 'constants/constants';
 import { checkNextPage, getFilteredIssues } from 'helpers';
 import { AppDispatch } from 'redux/store';
 import { IssueType } from 'types';
@@ -22,6 +15,7 @@ import { getInProgressIssues, nextPageInProgressIssues } from '../../redux/inPro
 import { repoValue } from '../../redux/repo/selectors';
 import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
 import { getToDoIssues, nextPageToDoIssues } from '../../redux/toDoIssues/slice';
+import { useBoardBackgrounds } from 'hooks';
 
 const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
 
@@ -174,44 +168,8 @@ const Boards = (): JSX.Element => {
     title === 'Done' && setPageDone((prev) => prev + 1);
   }
 
-  const [backgroundToDo, setBackgroundToDo] = useState<string>(DEFAULT_COLOR);
-  const [backgroundInProgress, setBackgroundInProgress] = useState<string>(DEFAULT_COLOR);
-  const [backgroundDone, setBackgroundDone] = useState<string>(DEFAULT_COLOR);
-
-  const setBackGround = (color: string, column: string) => {
-    if (color === 'default') {
-      setBackgroundToDo(DEFAULT_COLOR);
-      setBackgroundInProgress(DEFAULT_COLOR);
-      setBackgroundDone(DEFAULT_COLOR);
-    }
-    if (color === 'current') {
-      switch (column) {
-        case 'ToDo': {
-          setBackgroundToDo(CURRENT_COLUMN);
-          setBackgroundInProgress(SIBLING_COLUMN);
-          setBackgroundDone(SIBLING_COLUMN);
-          break;
-        }
-
-        case 'InProgress': {
-          setBackgroundToDo(SIBLING_COLUMN);
-          setBackgroundInProgress(CURRENT_COLUMN);
-          setBackgroundDone(SIBLING_COLUMN);
-          break;
-        }
-
-        case 'Done': {
-          setBackgroundToDo(SIBLING_COLUMN);
-          setBackgroundInProgress(SIBLING_COLUMN);
-          setBackgroundDone(CURRENT_COLUMN);
-          break;
-        }
-
-        default:
-          return;
-      }
-    }
-  };
+  const { backgroundToDo, backgroundInProgress, backgroundDone, setBackGround } =
+    useBoardBackgrounds();
 
   return (
     <div>
@@ -232,7 +190,7 @@ const Boards = (): JSX.Element => {
           column={inProgressIssues}
           setPage={(title) => setPage(title)}
           background={backgroundInProgress}
-          backgroundUp={(color: string) => setBackGround(color, 'InProgress')}
+          backgroundUp={(color: string) => setBackGround(color, 'In Progress')}
           isLoading={isLoadingInProgress}
         />
         <Column
