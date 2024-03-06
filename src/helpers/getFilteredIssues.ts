@@ -6,6 +6,7 @@ export const getFilteredIssues = (
   data: IssueType[],
   column: string
 ) => {
+  console.log(changes);
   data = (data as IssueType[]).map((item, idx) => ({
     id: item.id,
     order: idx + 1,

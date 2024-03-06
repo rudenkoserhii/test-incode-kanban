@@ -1,46 +1,62 @@
-# Getting Started with Create React App
+Project Name: Test Incode Kanban
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Overview
 
-## Available Scripts
+This project is a GitHub Kanban Board, allowing users to view and manage issues from a GitHub repository in a Kanban-style board. Users can load issues by entering a GitHub repository URL, and the app organizes issues into three columns: ToDo, In Progress, and Done. The application supports drag-and-drop functionality for changing the order of issues within columns. The app also stores the current issue position between sessions and allows users to visit the profile of the repo owner and the repo itself.
 
-In the project directory, you can run:
+Technologies Used:
 
-### `npm start`
+- React 18 with Hooks
+- TypeScript
+- UI Library: Ant Design
+- State Manager: Redux
+- Testing Libraries: Cypress
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Project Structure:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The project follows a modular structure to enhance readability and maintainability:
 
-### `npm test`
+src/: Contains the source code of the React application.
+cypress/: Includes Cypress integration tests.
+redux/: Contains Redux store configuration and slices.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Scripts:
+start: Runs the development server.
+build: Builds the production-ready application.
+eject: Ejects the project configuration from react-scripts.
+lint: Lints the project files using ESLint.
+lint:fix: Automatically fixes ESLint errors.
+prettier: Formats the code using Prettier.
+cypress:open: Opens the Cypress testing interface.
 
-### `npm run build`
+Development Setup:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Clone the repository: git clone <repo-url>
+- Install dependencies: npm install
+- Start the development server: npm start
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Testing:
+Unit tests are written and Integration tests are performed using Cypress.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+How to Use:
 
-### `npm run eject`
+- Enter the GitHub repository URL in the input field.
+- Press the "Load" button to fetch issues from the repository.
+- View and manage issues in the Kanban-style board.
+- Drag-n-drop issues between columns to change their order.
+- Stored issue positions persist between sessions.
+- Visit the profile of the repo owner and the repo itself through provided links.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Project Assessment:
+The project will be assessed based on the following criteria:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Workability: How well the application functions.
+Project Structure: Organization of files and directories.
+Code Quality: Clean and readable code, adherence to ESLint and Prettier standards.
+React Knowledge: Effective use of React and its ecosystem.
+Testing: Implementation of unit and integration tests.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Repository Link
+[Link to Repository](https://github.com/rudenkoserhii/test-incode-kanban)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Notes
