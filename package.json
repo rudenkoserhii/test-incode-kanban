@@ -1,8 +1,9 @@
 {
-  "name": "test-incode-kanban",
+  "name": "issueban",
   "version": "0.1.0",
   "type": "module",
   "private": true,
+  "homepage": "https://issueban.vercel.app/",
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
     "@types/antd": "^1.0.0",

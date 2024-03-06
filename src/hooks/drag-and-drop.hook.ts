@@ -1,4 +1,3 @@
-import { IssueType } from 'types';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChange } from '../redux/changes/slice';
 import { doneIssuesValue } from '../redux/doneIssues/selectors';
@@ -45,6 +44,7 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
       const targetIssueColumn = dataset['column'];
       const targetIssueOrder = Number(dataset['order']);
 
+      console.log(droppedIssueColumn, targetIssueColumn);
       if (data) {
         if (droppedIssueColumn !== targetIssueColumn) {
           switch (droppedIssueColumn) {
@@ -53,7 +53,7 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
                 .filter((element) => element.id !== droppedIssueId)
                 .map((element) => ({
                   ...element,
-                  order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
+                  order: element.order > droppedIssueOrder ? element.order - 1 : element.order,
                 }));
 
               dispatch(getToDoIssues(filteredToDoIssues));
@@ -82,7 +82,7 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
                 .filter((element) => element.id !== droppedIssueId)
                 .map((element) => ({
                   ...element,
-                  order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
+                  order: element.order > droppedIssueOrder ? element.order - 1 : element.order,
                 }));
 
               dispatch(getInProgressIssues(filteredInProgressIssues));
@@ -111,7 +111,7 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
                 .filter((element) => element.id !== droppedIssueId)
                 .map((element) => ({
                   ...element,
-                  order: droppedIssueOrder > element.order ? element.order - 1 : element.order,
+                  order: element.order > droppedIssueOrder ? element.order - 1 : element.order,
                 }));
 
               dispatch(getDoneIssues(filteredDoneIssues));
