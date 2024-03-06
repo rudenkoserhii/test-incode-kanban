@@ -1,21 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { App, Divider, Row } from 'antd';
-import axios, { AxiosError } from 'axios';
+import { useSelector } from 'react-redux';
+import { Divider, Row } from 'antd';
 import Column from 'components/Column/Column';
-import { BASE_URL, COLUMN_NAMES, FIRST_PAGE } from 'constants/constants';
-import { checkNextPage, getFilteredIssues } from 'helpers';
-import { AppDispatch } from 'redux/store';
-import { IssueType } from 'types';
-import { changesValue } from '../../redux/changes/selectors';
+import { COLUMN_NAMES, FIRST_PAGE } from 'constants/constants';
 import { doneIssuesValue } from '../../redux/doneIssues/selectors';
-import { getDoneIssues, nextPageDoneIssues } from '../../redux/doneIssues/slice';
 import { inProgressIssuesValue } from '../../redux/inProgressIssues/selectors';
-import { getInProgressIssues, nextPageInProgressIssues } from '../../redux/inProgressIssues/slice';
 import { repoValue } from '../../redux/repo/selectors';
 import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
-import { getToDoIssues, nextPageToDoIssues } from '../../redux/toDoIssues/slice';
-import { useBoardBackgrounds } from 'hooks';
+import { useBoardBackgrounds, useFetchIssues } from 'hooks';
 
 const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
 
@@ -23,144 +15,27 @@ const Boards = (): JSX.Element => {
   const [pageToDo, setPageToDo] = useState<number>(FIRST_PAGE);
   const [pageInProgress, setPageInProgress] = useState<number>(FIRST_PAGE);
   const [pageDone, setPageDone] = useState<number>(FIRST_PAGE);
-  const [isLoadingToDo, setIsLoadingToDo] = useState<boolean>(false);
-  const [isLoadingInProgress, setIsLoadingInProgress] = useState<boolean>(false);
-  const [isLoadingDone, setIsLoadingDone] = useState<boolean>(false);
-  const [nextPageToDo, setNextPageToDo] = useState<boolean>(false);
-  const [nextPageInProgress, setNextPageInProgress] = useState<boolean>(false);
-  const [nextPageDone, setNextPageDone] = useState<boolean>(false);
-
-  const [, setToDoState] = useState<IssueType[]>([]);
-  const [, setInProgressState] = useState<IssueType[]>([]);
-  const [, setDoneState] = useState<IssueType[]>([]);
 
   const url = useSelector(repoValue);
-  const dispatch: AppDispatch = useDispatch();
-  const changes = useSelector(changesValue);
 
-  const app = App.useApp();
-
-  const repo = url.split('github.com/')[1];
   let toDoIssues = useSelector(toDoIssuesValue);
   let inProgressIssues = useSelector(inProgressIssuesValue);
   let doneIssues = useSelector(doneIssuesValue);
 
-  useEffect(() => {
-    url &&
-      (async function getData() {
-        setIsLoadingToDo(true);
-        try {
-          setNextPageToDo(false);
-
-          const toDo = await axios.get(BASE_URL.replace('"repo"', repo), {
-            params: {
-              state: 'open',
-              assignee: 'none',
-              page: pageToDo,
-            },
-          });
-
-          if (checkNextPage(toDo.headers?.link, pageToDo)) {
-            setNextPageToDo(true);
-          }
-
-          if (!toDo.data) {
-            return app.message.error('Whoops, something went wrong with ToDo issues!');
-          }
-          if (toDo.data.length === 0) {
-            app.message.error('There are no ToDo issues on server!');
-          }
-
-          const filtered = getFilteredIssues(changes, repo, toDo.data, 'ToDo');
-
-          pageToDo === 1
-            ? dispatch(getToDoIssues(filtered))
-            : dispatch(nextPageToDoIssues(filtered));
-          setToDoState(toDoIssues);
-        } catch (error) {
-          app.message.warning((error as AxiosError).message);
-        } finally {
-          setIsLoadingToDo(false);
-        }
-      })();
-  }, [url, pageToDo]);
+  const {
+    fetchData,
+    isLoadingToDo,
+    isLoadingInProgress,
+    isLoadingDone,
+    nextPageToDo,
+    nextPageInProgress,
+    nextPageDone,
+  } = useFetchIssues();
 
   useEffect(() => {
-    url &&
-      (async function getData() {
-        setIsLoadingInProgress(true);
-        try {
-          setNextPageInProgress(false);
-
-          const inProgress = await axios.get(BASE_URL.replace('"repo"', repo), {
-            params: {
-              state: 'open',
-              assignee: '*',
-              page: pageInProgress,
-            },
-          });
-
-          if (checkNextPage(inProgress.headers?.link, pageInProgress)) {
-            setNextPageToDo(true);
-          }
-
-          if (!inProgress.data) {
-            return app.message.error('Whoops, something went wrong with InProgress issues!');
-          }
-          if (inProgress.data.length === 0) {
-            app.message.error('There are no InProgress issues on server!');
-          }
-
-          const filtered = getFilteredIssues(changes, repo, inProgress.data, 'In Progress');
-
-          pageInProgress === 1
-            ? dispatch(getInProgressIssues(filtered))
-            : dispatch(nextPageInProgressIssues(filtered));
-          setInProgressState(inProgressIssues);
-        } catch (error) {
-          app.message.warning((error as AxiosError).message);
-        } finally {
-          setIsLoadingInProgress(false);
-        }
-      })();
-  }, [url, pageInProgress]);
-
-  useEffect(() => {
-    url &&
-      (async function getData() {
-        setIsLoadingDone(true);
-        try {
-          setNextPageDone(false);
-          const done = await axios.get(BASE_URL.replace('"repo"', repo), {
-            params: {
-              state: 'closed',
-              page: pageDone,
-            },
-          });
-
-          if (checkNextPage(done.headers?.link, pageDone)) {
-            setNextPageDone(true);
-          }
-          if (!done.data) {
-            return app.message.error('Whoops, something went wrong with Done issues!');
-          }
-          if (done.data.length === 0) {
-            app.message.error('There are no Done issues on server!');
-          }
-
-          const filtered = getFilteredIssues(changes, repo, done.data, 'Done');
-
-          pageDone === 1
-            ? dispatch(getDoneIssues(filtered))
-            : dispatch(nextPageDoneIssues(filtered));
-          setDoneState(doneIssues);
-        } catch (error) {
-          app.message.warning((error as AxiosError).message);
-        } finally {
-          setIsLoadingDone(false);
-        }
-      })();
-  }, [url, pageDone]);
+    if (!url) return;
+    fetchData(pageToDo, pageInProgress, pageDone);
+  }, [url, pageToDo, pageInProgress, pageDone]);
 
   function setPage(title: string) {
     title === 'ToDo' && setPageToDo((prev) => prev + 1);

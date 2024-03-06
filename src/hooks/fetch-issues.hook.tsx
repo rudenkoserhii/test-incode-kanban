@@ -1,16 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { App, Divider, Row } from 'antd';
+import { App } from 'antd';
 import axios, { AxiosError } from 'axios';
-import Column from 'components/Column/Column';
-import {
-  BASE_URL,
-  COLUMN_NAMES,
-  FIRST_PAGE,
-  SIBLING_COLUMN,
-  CURRENT_COLUMN,
-  DEFAULT_COLOR,
-} from 'constants/constants';
+import { BASE_URL } from 'constants/constants';
 import { checkNextPage, getFilteredIssues } from 'helpers';
 import { AppDispatch } from 'redux/store';
 import { IssueType } from 'types';
@@ -23,79 +15,133 @@ import { repoValue } from '../redux/repo/selectors';
 import { toDoIssuesValue } from '../redux/toDoIssues/selectors';
 import { getToDoIssues, nextPageToDoIssues } from '../redux/toDoIssues/slice';
 
-const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
+export const useFetchIssues = () => {
+  const [isLoadingToDo, setIsLoadingToDo] = useState<boolean>(false);
+  const [isLoadingInProgress, setIsLoadingInProgress] = useState<boolean>(false);
+  const [isLoadingDone, setIsLoadingDone] = useState<boolean>(false);
+  const [nextPageToDo, setNextPageToDo] = useState<boolean>(false);
+  const [nextPageInProgress, setNextPageInProgress] = useState<boolean>(false);
+  const [nextPageDone, setNextPageDone] = useState<boolean>(false);
 
-export const useFetchIssues = (
-  page: number,
-  column: string,
-  repo: string,
-  dispatch: AppDispatch,
-  setIssuesState: (issues: IssueType[]) => void,
-  setIsLoading: (isLoading: boolean) => void,
-  setNextPage: (nextPage: boolean) => void
-) => {
-  const app = App.useApp();
-  const url = BASE_URL.replace('"repo"', repo);
+  const [, setToDoState] = useState<IssueType[]>([]);
+  const [, setInProgressState] = useState<IssueType[]>([]);
+  const [, setDoneState] = useState<IssueType[]>([]);
+
+  const url = useSelector(repoValue);
+  const dispatch: AppDispatch = useDispatch();
   const changes = useSelector(changesValue);
+  const app = App.useApp();
 
-  useEffect(() => {
-    url &&
-      (async function getData() {
-        setIsLoading(true);
-        try {
-          setNextPage(false);
+  const repo = url.split('github.com/')[1];
+  let toDoIssues = useSelector(toDoIssuesValue);
+  let inProgressIssues = useSelector(inProgressIssuesValue);
+  let doneIssues = useSelector(doneIssuesValue);
 
-          const issuesResponse = await axios.get(url, {
-            params: {
-              state: column === 'Done' ? 'closed' : 'open',
-              assignee: column === 'In Progress' ? '*' : 'none',
-              page,
-            },
-          });
+  const fetchData = async (pageToDo: number, pageInProgress: number, pageDone: number) => {
+    try {
+      if (pageToDo > 1) setNextPageToDo(false);
+      if (pageInProgress > 1) setNextPageInProgress(false);
+      if (pageDone > 1) setNextPageDone(false);
 
-          if (checkNextPage(issuesResponse.headers?.link, page)) {
-            setNextPage(true);
-          }
+      const [toDoResponse, inProgressResponse, doneResponse] = await Promise.all([
+        axios.get(BASE_URL.replace('"repo"', repo), {
+          params: {
+            state: 'open',
+            assignee: 'none',
+            page: pageToDo,
+          },
+        }),
+        axios.get(BASE_URL.replace('"repo"', repo), {
+          params: {
+            state: 'open',
+            assignee: '*',
+            page: pageInProgress,
+          },
+        }),
+        axios.get(BASE_URL.replace('"repo"', repo), {
+          params: {
+            state: 'closed',
+            page: pageDone,
+          },
+        }),
+      ]);
 
-          if (!issuesResponse.data) {
-            return app.message.error(`Whoops, something went wrong with ${column} issues!`);
-          }
-          if (issuesResponse.data.length === 0) {
-            app.message.error(`There are no ${column} issues on the server!`);
-          }
+      if (checkNextPage(toDoResponse.headers?.link, pageToDo)) {
+        setNextPageToDo(true);
+      }
+      if (checkNextPage(inProgressResponse.headers?.link, pageInProgress)) {
+        setNextPageInProgress(true);
+      }
+      if (checkNextPage(doneResponse.headers?.link, pageDone)) {
+        setNextPageDone(true);
+      }
 
-          const filtered = getFilteredIssues(changes, repo, issuesResponse.data, column);
+      if (!toDoResponse.data) {
+        app.message.error('Whoops, something went wrong with ToDo issues!');
+      }
+      if (toDoResponse.data.length === 0) {
+        app.message.error('There are no ToDo issues on the server!');
+      }
 
-          page === 1
-            ? dispatch(
-                column === 'ToDo'
-                  ? getToDoIssues(filtered)
-                  : column === 'In Progress'
-                    ? getInProgressIssues(filtered)
-                    : getDoneIssues(filtered)
-              )
-            : dispatch(
-                column === 'ToDo'
-                  ? nextPageToDoIssues(filtered)
-                  : column === 'In Progress'
-                    ? nextPageInProgressIssues(filtered)
-                    : nextPageDoneIssues(filtered)
-              );
+      if (!inProgressResponse.data) {
+        app.message.error('Whoops, something went wrong with InProgress issues!');
+      }
+      if (inProgressResponse.data.length === 0) {
+        app.message.error('There are no InProgress issues on the server!');
+      }
 
-          setIssuesState(
-            column === 'ToDo'
-              ? useSelector(toDoIssuesValue)
-              : column === 'In Progress'
-                ? useSelector(inProgressIssuesValue)
-                : useSelector(doneIssuesValue)
-          );
-        } catch (error) {
-          app.message.warning((error as AxiosError).message);
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-  }, [url, page]);
+      if (!doneResponse.data) {
+        app.message.error('Whoops, something went wrong with Done issues!');
+      }
+      if (doneResponse.data.length === 0) {
+        app.message.error('There are no Done issues on the server!');
+      }
+
+      const filteredToDo = getFilteredIssues(changes, repo, toDoResponse.data, 'ToDo');
+      const filteredInProgress = getFilteredIssues(
+        changes,
+        repo,
+        inProgressResponse.data,
+        'In Progress'
+      );
+      const filteredDone = getFilteredIssues(changes, repo, doneResponse.data, 'Done');
+
+      if (pageToDo === 1) {
+        dispatch(getToDoIssues(filteredToDo));
+      } else {
+        dispatch(nextPageToDoIssues(filteredToDo));
+      }
+      setToDoState(toDoIssues);
+
+      if (pageInProgress === 1) {
+        dispatch(getInProgressIssues(filteredInProgress));
+      } else {
+        dispatch(nextPageInProgressIssues(filteredInProgress));
+      }
+      setInProgressState(inProgressIssues);
+
+      if (pageDone === 1) {
+        dispatch(getDoneIssues(filteredDone));
+      } else {
+        dispatch(nextPageDoneIssues(filteredDone));
+      }
+      setDoneState(doneIssues);
+    } catch (error) {
+      app.message.warning((error as AxiosError).message);
+    } finally {
+      setIsLoadingToDo(false);
+      setIsLoadingInProgress(false);
+      setIsLoadingDone(false);
+    }
+  };
+
+  return {
+    fetchData,
+    isLoadingToDo,
+    isLoadingInProgress,
+    isLoadingDone,
+    nextPageToDo,
+    nextPageInProgress,
+    nextPageDone,
+  };
 };
-
-export default useFetchIssues;

@@ -9,7 +9,6 @@ export const useBoardBackgrounds = () => {
   const [backgroundDone, setBackgroundDone] = useState<string>(DEFAULT_COLOR);
 
   const setBackGround = (color: string, column: string) => {
-    console.log(column);
     if (color === 'default') {
       setBackgroundToDo(DEFAULT_COLOR);
       setBackgroundInProgress(DEFAULT_COLOR);
