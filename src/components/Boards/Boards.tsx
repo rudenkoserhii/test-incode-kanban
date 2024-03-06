@@ -10,6 +10,8 @@ import { toDoIssuesValue } from '../../redux/toDoIssues/selectors';
 import { useBoardBackgrounds, useFetchIssues, useSetPage } from 'hooks';
 import { getColumnProps } from 'helpers';
 
+const { TO_DO, IN_PROGRESS, DONE } = COLUMN_NAMES;
+
 const Boards = (): JSX.Element => {
   const url = useSelector(repoValue);
 
@@ -17,22 +19,55 @@ const Boards = (): JSX.Element => {
   let inProgressIssues = useSelector(inProgressIssuesValue);
   let doneIssues = useSelector(doneIssuesValue);
 
+  // const {
+  //   fetchData,
+  //   isLoadingToDo,
+  //   isLoadingInProgress,
+  //   isLoadingDone,
+  //   nextPageToDo,
+  //   nextPageInProgress,
+  //   nextPageDone,
+  // } = useFetchIssues();
+
   const {
-    fetchData,
-    isLoadingToDo,
-    isLoadingInProgress,
-    isLoadingDone,
-    nextPageToDo,
-    nextPageInProgress,
-    nextPageDone,
-  } = useFetchIssues();
+    fetchDataForColumn: fetchToDoIssues,
+    isLoading: isLoadingToDo,
+    nextPage: nextPageToDo,
+  } = useFetchIssues(TO_DO);
+
+  const {
+    fetchDataForColumn: fetchInProgressIssues,
+    isLoading: isLoadingInProgress,
+    nextPage: nextPageInProgress,
+  } = useFetchIssues(IN_PROGRESS);
+
+  const {
+    fetchDataForColumn: fetchDoneIssues,
+    isLoading: isLoadingDone,
+    nextPage: nextPageDone,
+  } = useFetchIssues(DONE);
 
   const { pageToDo, pageInProgress, pageDone, setPage } = useSetPage();
 
   useEffect(() => {
     if (!url) return;
-    fetchData(pageToDo, pageInProgress, pageDone);
-  }, [url, pageToDo, pageInProgress, pageDone]);
+    fetchToDoIssues(pageToDo);
+  }, [url, pageToDo]);
+
+  useEffect(() => {
+    if (!url) return;
+    fetchInProgressIssues(pageInProgress);
+  }, [url, pageInProgress]);
+
+  useEffect(() => {
+    if (!url) return;
+    fetchDoneIssues(pageDone);
+  }, [url, pageDone]);
+
+  // useEffect(() => {
+  //   if (!url) return;
+  //   fetchData(pageToDo, pageInProgress, pageDone);
+  // }, [url, pageToDo, pageInProgress, pageDone]);
 
   const { backgroundToDo, backgroundInProgress, backgroundDone, setBackGround } =
     useBoardBackgrounds();
