@@ -130,13 +130,16 @@ li {
   background: transparent;
   border: none;
 }
+
 .issue {
   background: transparent;
   border: none;
   border-radius: 20px;
   box-shadow: 0px 0px 2px 2px #00b96b;
   width: 100%;
+}
 
+.ant-card.issue {
   pointer-events: none;
 }
 
