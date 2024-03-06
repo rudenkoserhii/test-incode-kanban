@@ -5,13 +5,13 @@ import { IssueType } from 'types';
 import { useDragAndDrop } from 'hooks';
 
 type PropsColumn = {
-  column: IssueType[];
+  column?: IssueType[];
   title: string;
   setPage: (value: string) => void;
-  background: string;
+  background?: string;
   backgroundUp: (value: string) => void;
-  removeButton: boolean;
-  isLoading: boolean;
+  removeButton?: boolean;
+  isLoading?: boolean;
 };
 
 const Column = ({
