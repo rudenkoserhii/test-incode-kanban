@@ -1,26 +1,37 @@
 import { List } from 'antd';
 import Issue from 'components/Issue/Issue';
+import React, { useRef } from 'react';
 import { IssueType } from 'types';
 
 type PropsMovable = {
   issue: IssueType;
   title: string;
-  startDragging: () => void;
-  isDragging: boolean;
+  backgroundUp: (value: string) => void;
 };
 
-const Movable = ({ issue, title, startDragging, isDragging }: PropsMovable): JSX.Element => {
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, issue: IssueType) => {
-    startDragging();
-    (e.target as HTMLLIElement).style.opacity = '0.4';
+const Movable = React.memo(({ issue, title, backgroundUp }: PropsMovable): JSX.Element => {
+  const draggableRef = useRef<HTMLLIElement>(null);
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    setTimeout(() => backgroundUp('current'));
+    if (draggableRef.current) {
+      draggableRef.current.style.opacity = '0.4';
+    }
     e.dataTransfer.setData('text/plain', JSON.stringify({ ...issue, column: title }));
+  };
+
+  const handleDragEnd = () => {
+    if (draggableRef.current) {
+      draggableRef.current.style.opacity = '1';
+    }
   };
 
   return (
     <List.Item
+      ref={draggableRef}
       draggable
-      onDragStart={(e) => handleDragStart(e, issue)}
-      onDragEnd={(e) => ((e.target as HTMLLIElement).style.opacity = '1')}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       id={issue.id.toString()}
       className="movable"
       data-order={issue.order}
@@ -29,6 +40,6 @@ const Movable = ({ issue, title, startDragging, isDragging }: PropsMovable): JSX
       <Issue issue={issue} />
     </List.Item>
   );
-};
+});
 
 export default Movable;
