@@ -64,11 +64,6 @@ const Boards = (): JSX.Element => {
     fetchDoneIssues(pageDone);
   }, [url, pageDone]);
 
-  // useEffect(() => {
-  //   if (!url) return;
-  //   fetchData(pageToDo, pageInProgress, pageDone);
-  // }, [url, pageToDo, pageInProgress, pageDone]);
-
   const { backgroundToDo, backgroundInProgress, backgroundDone, setBackGround } =
     useBoardBackgrounds();
 
