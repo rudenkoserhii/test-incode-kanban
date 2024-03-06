@@ -27,12 +27,7 @@ const Column = ({
 
   return (
     <Col className="issues">
-      <Card
-        className="full-width-height"
-        title={title}
-        style={{ background }}
-        onClick={() => console.log('click-card')}
-      >
+      <Card className="full-width-height" title={title} style={{ background }}>
         <div
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
