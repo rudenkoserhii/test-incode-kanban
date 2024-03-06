@@ -44,7 +44,6 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
       const targetIssueColumn = dataset['column'];
       const targetIssueOrder = Number(dataset['order']);
 
-      console.log(droppedIssueColumn, targetIssueColumn);
       if (data) {
         if (droppedIssueColumn !== targetIssueColumn) {
           switch (droppedIssueColumn) {
