@@ -233,7 +233,7 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
                   element.order >= targetIssueOrder &&
                   element.order < droppedIssueOrder
                 ) {
-                  order = element.order - 1;
+                  order = element.order + 1;
                 } else if (
                   droppedIssueOrder > targetIssueOrder &&
                   element.order > droppedIssueOrder
@@ -277,7 +277,7 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
                   element.order >= targetIssueOrder &&
                   element.order < droppedIssueOrder
                 ) {
-                  order = element.order - 1;
+                  order = element.order + 1;
                 } else if (
                   droppedIssueOrder > targetIssueOrder &&
                   element.order > droppedIssueOrder
@@ -321,7 +321,7 @@ export const useDragAndDrop = (backgroundUp: (value: string) => void) => {
                   element.order >= targetIssueOrder &&
                   element.order < droppedIssueOrder
                 ) {
-                  order = element.order - 1;
+                  order = element.order + 1;
                 } else if (
                   droppedIssueOrder > targetIssueOrder &&
                   element.order > droppedIssueOrder
