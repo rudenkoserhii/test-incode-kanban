@@ -79,14 +79,14 @@ const TopRated = (): JSX.Element => {
   };
 
   const paragraphProps = {
-    rows: 0,
+    rows: 1,
     width: ['100%'],
   };
 
   return (
     <>
       <Divider orientation="right">Top Rated Repos</Divider>
-      <Skeleton active loading={isloadingTop} paragraph={{ ...paragraphProps }}>
+      <Skeleton active loading={isloadingTop} title={false} paragraph={{ ...paragraphProps }}>
         <Dropdown
           menu={{
             items,
