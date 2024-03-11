@@ -81,7 +81,9 @@ const Input = (): JSX.Element => {
           <AntInput
             className="input-one__input"
             allowClear
-            placeholder="Please enter a repo URL"
+            placeholder={
+              "Please enter a repo URL, for example: 'https://github.com/facebook/react'"
+            }
             suffix={suffix}
           />
         </Form.Item>
